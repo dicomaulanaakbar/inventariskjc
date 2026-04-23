@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('barang_juals', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->datetime('tgl_jual');
+            $table->enum('metode pembayaran', ['Qris', 'Tunai', 'Transfer'])->default('lainnya');
         });
     }
 

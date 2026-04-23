@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('returs_details', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->integer('jumlah');
+            $table->foreignId('return_id')->constrained('returns')->onDelete('cascade');
+            $table->foreignId('barang_id')->constrained('barangs')->onDelete('restrict');
         });
     }
 
