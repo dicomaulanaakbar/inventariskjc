@@ -1,36 +1,91 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Dashboard')</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+<body class="bg-gray-100">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+<div class="flex min-h-screen">
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    <!-- 🔵 SIDEBAR -->
+    <aside class="w-64 bg-gray-300 shadow-md">
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+        <!-- Logo -->
+        <div class="p-4 font-bold text-lg border-b">
+            KJC STOK
         </div>
-    </body>
+
+        <!-- Menu -->
+        <nav class="p-4 space-y-2 text-sm">
+
+            <a href="/dashboard"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400
+               {{ request()->is('dashboard') ? 'bg-gray-400 font-semibold' : '' }}">
+                🏠 Dashboard
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
+                📦 Stok Barang
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
+                ➕ Tambah Barang
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
+                📥 Barang Masuk
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
+                📤 Barang Keluar
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
+                📄 Laporan
+            </a>
+
+        </nav>
+    </aside>
+
+    <!-- 🧾 MAIN -->
+    <div class="flex-1 flex flex-col">
+
+        <!-- 🔝 NAVBAR -->
+        <div class="flex justify-between items-center bg-gray-200 p-4 border-b">
+
+            <h1 class="font-semibold text-lg">
+                @yield('title', 'Dashboard')
+            </h1>
+
+            <div class="flex items-center gap-4">
+                🔔
+
+                <div class="flex items-center gap-2">
+                    <span>Admin</span>
+                    👤
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 📄 CONTENT -->
+        <div class="p-6">
+            @yield('content')
+        </div>
+
+    </div>
+
+</div>
+
+</body>
 </html>
