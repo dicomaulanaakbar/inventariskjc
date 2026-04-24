@@ -101,7 +101,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    {{-- <tbody>
                         @forelse($barangs as $index => $barang)
                         <tr>
                             <td>{{ $index + 1 }}</td>
@@ -131,7 +131,7 @@
                         @empty
                         <tr><td colspan="6" class="text-center">Belum ada data barang</td></tr>
                         @endforelse
-                    </tbody>
+                    </tbody> --}}
                 </table>
             </div>
         </div>
