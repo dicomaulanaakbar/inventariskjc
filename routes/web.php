@@ -6,7 +6,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
+// use App\Http\Controllers\DashboardController;
 
 // Halaman utama langsung ke dashboard (login dulu jika pakai auth)
 Route::get('/', function () {
