@@ -138,8 +138,3 @@
     </div>
 </div>
 @endsection
-
-@push('styles')
-<!-- Font Awesome (jika belum ada di layout) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-@endpush
