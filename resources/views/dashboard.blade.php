@@ -18,7 +18,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Total Barang</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBarang }}</div>
+                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBarang }}</div> --}}
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-boxes fa-2x text-gray-300"></i>
@@ -36,7 +36,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Stok Kurang (≤5)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stokKurang }}</div>
+                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stokKurang }}</div> --}}
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -54,7 +54,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Barang Masuk (Bulan Ini)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangMasuk }}</div>
+                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangMasuk }}</div> --}}
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-arrow-down fa-2x text-gray-300"></i>
@@ -72,7 +72,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                 Barang Keluar (Bulan Ini)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangKeluar }}</div>
+                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangKeluar }}</div> --}}
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
