@@ -13,9 +13,9 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Profile Breeze
@@ -34,9 +34,9 @@ Route::middleware('auth')->group(function () {
     // Route::get('/barang/{barang}/riwayat', [TransaksiController::class, 'riwayat'])->name('barang.riwayat');
 
     // // Laporan
-    // Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
-    // Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
-    // Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
+    Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
+    Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
+    Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
 });
 
 require __DIR__.'/auth.php';
