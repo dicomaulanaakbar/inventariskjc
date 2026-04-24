@@ -7,6 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -57,4 +60,49 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+      public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string',
+            'foto' => 'nullable|image|max:2048|mimes:jpg,jpeg,png',
+        ]);
+
+    
+        $user->name = $request->name;
+        $user->no_hp = $request->no_hp;
+        $user->alamat = $request->alamat;
+
+        
+        if ($request->hasFile('foto')) {
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $path = $request->file('foto')->store('profiles', 'public');
+            $user->foto = $path;
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
+    }
+
+     public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('profile.edit')->with('status', 'password-updated');
+    }
+
 }

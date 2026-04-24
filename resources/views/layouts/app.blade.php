@@ -41,32 +41,28 @@
                         </li>
                         @endif
 
-                        @if(auth()->user()->role == 'owner' || auth()->user()->role == 'admin')
+                        @if(auth()->user()->role == 'admin')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('supplier.*') ? 'active' : '' }}" href="#">
                                 <i class="fas fa-truck me-1"></i> Supplier
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="#">
-                                <i class="fas fa-tags me-1"></i> Kategori
-                            </a>
-                        </li>
                         @endif
 
-                        @if(auth()->user()->role == 'owner' || auth()->user()->role == 'admin' || auth()->user()->role == 'kasir')
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('transaksi.*') ? 'active' : '' }}" href="#">
-                                <i class="fas fa-cash-register me-1"></i> Transaksi
-                            </a>
-                        </li>
+                        @if(auth()->user()->role == 'admin')
+                       <li class="nav-item">
+                             <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">
+                            <i class="fas fa-tags me-1"></i> Kategori
+                         </a>
+                    </li>
                         @endif
 
-                        @if(auth()->user()->role == 'owner' || auth()->user()->role == 'admin')
+                        @if(auth()->user()->role == 'owner')
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-chart-line me-1"></i> Laporan
-                            </a>
+                              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <img src="{{ Auth::user()->foto_url }}" width="32" height="32" class="rounded-circle me-2" style="object-fit: cover;">
+                                    {{ Auth::user()->name }}
+                                </a>
                             <ul class="dropdown-menu" aria-labelledby="laporanDropdown">
                                 <li><a class="dropdown-item" href="{{ route('laporan.stok') }}">Laporan Stok</a></li>
                                 <li><a class="dropdown-item" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a></li>

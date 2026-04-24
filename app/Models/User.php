@@ -23,6 +23,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'foto',
+        'no_hp',
+        'alamat'
     ];
 
     /**
@@ -57,4 +60,13 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function getFotoUrlAttribute()
+{
+    if ($this->foto && file_exists(storage_path('app/public/' . $this->foto))) {
+        return asset('storage/' . $this->foto);
+    }
+    return 'https://ui-avatars.com/api/?background=0D8F81&color=fff&name=' . urlencode($this->name);
+}
+
 }
