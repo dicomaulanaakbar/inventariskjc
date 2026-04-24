@@ -29,7 +29,7 @@
                 🏠 Dashboard
             </a>
 
-            <a href="#"
+            <a href="{{ route('stok.index') }}"
                class="flex items-center gap-2 p-2 rounded hover:bg-gray-400">
                 📦 Stok Barang
             </a>
