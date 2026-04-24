@@ -6,6 +6,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Barang (admin)
     Route::resource('barang', BarangController::class);
+
+    //supplier
+    Route::resource('supplier', SupplierController::class);
+    
 
     // // Transaksi stok
 
