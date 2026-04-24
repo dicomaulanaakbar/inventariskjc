@@ -9,7 +9,7 @@ class ReturDetail extends Model
 {
      use HasFactory;
 
-    protected $table = 'return_details';
+    protected $table = 'returs_details';
     protected $fillable = [
         'jumlah',
         'return_id',
