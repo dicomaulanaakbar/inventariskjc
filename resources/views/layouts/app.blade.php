@@ -42,23 +42,23 @@
                         @endif
 
                         @if(auth()->user()->role == 'admin')
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('supplier.*') ? 'active' : '' }}" href="#">
-                                <i class="fas fa-truck me-1"></i> Supplier
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="#">
-                                <i class="fas fa-tags me-1"></i> Kategori
-                            </a>
-                        </li>
+                       <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('supplier.*') ? 'active' : '' }}" href="{{ route('supplier.index') }}">
+                            <i class="fas fa-truck me-1"></i> Supplier
+                        </a>
+                    </li>
+                      <li class="nav-item">
+                         <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">
+                            <i class="fas fa-tags me-1"></i> Kategori
+                         </a>
+                    </li>
                         @endif
 
                         @if(auth()->user()->role == 'admin')
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('transaksi.*') ? 'active' : '' }}" href="#">
-                                <i class="fas fa-cash-register me-1"></i> Transaksi
-                            </a>
+                             <a class="nav-link {{ request()->routeIs('transaksi.*') ? 'active' : '' }}" href="{{ route('transaksi.index') }}">
+                            <i class="fas fa-cash-register"></i> Transaksi
+                         </a>
                         </li>
                         @endif
 
@@ -95,10 +95,11 @@
                         @endif
                     @else
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
-                                <span class="badge bg-secondary ms-1">{{ ucfirst(Auth::user()->role) }}</span>
-                            </a>
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+        <img src="{{ Auth::user()->foto_url }}" width="32" height="32" class="rounded-circle me-2" style="object-fit: cover;">
+        {{ Auth::user()->name }}
+        <span class="badge bg-secondary ms-2">{{ ucfirst(Auth::user()->role) }}</span>
+    </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-id-card me-2"></i> Profil</a></li>
                                 <li><hr class="dropdown-divider"></li>

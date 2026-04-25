@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
 
     //supplier
     Route::resource('supplier', SupplierController::class);
-    
+
 
     // // Transaksi stok
 
@@ -52,6 +52,12 @@ Route::middleware('auth')->group(function () {
     // Route::get('/barang/{barang}/stok-keluar', [TransaksiController::class, 'formStokKeluar'])->name('stok.keluar.form');
     // Route::post('/barang/{barang}/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
     // Route::get('/barang/{barang}/riwayat', [TransaksiController::class, 'riwayat'])->name('barang.riwayat');
+
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/stok-masuk/{barang}', [TransaksiController::class, 'formStokMasuk'])->name('stok.masuk.form');
+    Route::post('/transaksi/stok-masuk/{barang}', [TransaksiController::class, 'stokMasuk'])->name('stok.masuk');
+    Route::get('/transaksi/stok-keluar/{barang?}', [TransaksiController::class, 'formStokKeluar'])->name('stok.keluar.form');
+    Route::post('/transaksi/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
 
    // Laporan
     Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
