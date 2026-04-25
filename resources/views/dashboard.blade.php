@@ -30,21 +30,27 @@
 
         <!-- Stok Kurang -->
         <div class="col-md-3 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Stok Kurang (≤5)</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stokKurang }}</div> --}}
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                        </div>
+    <div class="card @if($stokKurang > 0) border-left-danger bg-danger text-white @else border-left-warning @endif shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-uppercase mb-1 @if($stokKurang > 0) text-white @else text-warning @endif">
+                        STOK KURANG (≤5)
                     </div>
+                    <div class="h5 mb-0 font-weight-bold @if($stokKurang > 0) text-white @else text-gray-800 @endif">
+                        {{ $stokKurang }} 
+                        @if($stokKurang > 0) 
+                            <span class="badge bg-light text-danger ms-2">Butuh perhatian!</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-exclamation-triangle fa-2x @if($stokKurang > 0) text-white @else text-gray-300 @endif"></i>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
         <!-- Barang Masuk (Bulan Ini) -->
         <div class="col-md-3 mb-4">
@@ -54,7 +60,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Barang Masuk (Bulan Ini)</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangMasuk }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangMasuk }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-arrow-down fa-2x text-gray-300"></i>
@@ -72,7 +78,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                 Barang Keluar (Bulan Ini)</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangKeluar }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $barangKeluar }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
@@ -101,7 +107,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    {{-- <tbody>
+                    <tbody>
                         @forelse($barangs as $index => $barang)
                         <tr>
                             <td>{{ $index + 1 }}</td>
@@ -131,7 +137,7 @@
                         @empty
                         <tr><td colspan="6" class="text-center">Belum ada data barang</td></tr>
                         @endforelse
-                    </tbody> --}}
+                    </tbody>
                 </table>
             </div>
         </div>

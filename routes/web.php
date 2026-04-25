@@ -13,9 +13,13 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     
@@ -49,10 +53,11 @@ Route::middleware('auth')->group(function () {
     // Route::post('/barang/{barang}/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
     // Route::get('/barang/{barang}/riwayat', [TransaksiController::class, 'riwayat'])->name('barang.riwayat');
 
-    // // Laporan
-    // Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
-    // Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
-    // Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
+   // Laporan
+    Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
+    Route::get('/laporan/keuangan', [LaporanController::class, 'keuangan'])->name('laporan.keuangan');
+    Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
+    Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
 });
 
     //kategori
