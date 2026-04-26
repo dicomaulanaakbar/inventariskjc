@@ -26,7 +26,7 @@
         </div>
         <div class="col-md-2 align-self-end">
             <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('transaksi.index') }}" class="btn btn-secondary">Reset</a>
+            <a href="{{ route('catatan.index') }}" class="btn btn-secondary">Reset</a>
         </div>
     </form>
 

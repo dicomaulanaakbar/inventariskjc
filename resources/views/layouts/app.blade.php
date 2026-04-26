@@ -56,7 +56,7 @@
 
                         @if(auth()->user()->role == 'admin')
                         <li class="nav-item">
-                             <a class="nav-link {{ request()->routeIs('transaksi.*') ? 'active' : '' }}" href="{{ route('transaksi.index') }}">
+                             <a class="nav-link {{ request()->routeIs('catatan.*') ? 'active' : '' }}" href="{{ route('catatan.index') }}">
                             <i class="fas fa-solid fa-print"></i> Catatan Barang
                          </a>
                         </li>

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\BarangController;
-use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\CatatanBarangController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -53,17 +53,23 @@ Route::middleware('auth')->group(function () {
     // Route::post('/barang/{barang}/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
     // Route::get('/barang/{barang}/riwayat', [TransaksiController::class, 'riwayat'])->name('barang.riwayat');
 
-    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
-    Route::get('/transaksi/stok-masuk/{barang}', [TransaksiController::class, 'formStokMasuk'])->name('stok.masuk.form');
-    Route::post('/transaksi/stok-masuk/{barang}', [TransaksiController::class, 'stokMasuk'])->name('stok.masuk');
-    Route::get('/transaksi/stok-keluar/{barang?}', [TransaksiController::class, 'formStokKeluar'])->name('stok.keluar.form');
-    Route::post('/transaksi/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
+    Route::get('/catatan', [CatatanBarangController::class, 'index'])->name('catatan.index');
+    Route::get('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
+    Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
+    Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])->name('stok.keluar.form');
+    Route::post('/catatan/stok-keluar', [CatatanBarangController::class, 'stokKeluar'])->name('stok.keluar');
 
    // Laporan
     Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
     Route::get('/laporan/keuangan', [LaporanController::class, 'keuangan'])->name('laporan.keuangan');
     Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
     Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
+
+    Route::get('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
+    Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
+
+    Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])->name('stok.keluar.form');
+    Route::post('/catatan/stok-keluar', [CatatanBarangController::class, 'stokKeluar'])->name('stok.keluar');
 });
 
     //kategori

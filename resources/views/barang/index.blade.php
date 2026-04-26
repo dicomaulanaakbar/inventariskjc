@@ -8,6 +8,14 @@
     <div class="card-header d-flex justify-content-between">
         <h5>Data Barang</h5>
         <a href="{{ route('barang.create') }}" class="btn btn-primary">+ Tambah Barang</a>
+
+         <a href="{{ route('stok.keluar.form') }}" class="btn btn-danger btn-sm">
+            <i class="fas fa-arrow-up"></i> Barang Keluar
+        </a>
+
+        <a href="{{ route('stok.masuk.form', ['barang' => 0]) }}" class="btn btn-success btn-sm">
+            <i class="fas fa-arrow-down"></i> Barang Masuk
+        </a>
     </div>
 
     <div class="card-body">

@@ -10,7 +10,7 @@ use App\Models\BarangJualDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class TransaksiController extends Controller
+class CatatanBarangController extends Controller
 {
     public function index(Request $request)
     {
@@ -35,7 +35,7 @@ class TransaksiController extends Controller
         
         $labaKotor = $totalPendapatan - $totalPengeluaran;
 
-        return view('transaksi.index', compact(
+        return view('catatan.index', compact(
             'pembelian', 'penjualan', 'start', 'end',
             'totalPendapatan', 'totalPengeluaran', 'labaKotor'
         ));
@@ -43,7 +43,7 @@ class TransaksiController extends Controller
 
      public function formStokMasuk(Barang $barang)
     {
-        return view('transaksi.stok-masuk', compact('barang'));
+        return view('catatan.stok-masuk', compact('barang'));
     }
 
       public function stokMasuk(Request $request, Barang $barang)
@@ -69,7 +69,7 @@ class TransaksiController extends Controller
             $barang->increment('stok', $request->jumlah);
             $barang->update(['harga_beli' => $request->harga_beli_satuan]);
             DB::commit();
-            return redirect()->route('transaksi.index')->with('success', 'Stok masuk berhasil dicatat.');
+            return redirect()->route('catatan.index')->with('success', 'Stok masuk berhasil dicatat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
@@ -79,11 +79,11 @@ class TransaksiController extends Controller
     public function formStokKeluar(Request $request, ?Barang $barang = null)
     {
         if ($barang) {
-            return view('transaksi.stok-keluar', compact('barang'));
+            return view('catatan.stok-keluar', compact('barang'));
         }
 
         $barangs = Barang::orderBy('nama_barang')->get();
-        return view('transaksi.stok-keluar', compact('barangs'));
+        return view('catatan.stok-keluar', compact('barangs'));
     }
 
      public function stokKeluar(Request $request)
@@ -119,7 +119,7 @@ class TransaksiController extends Controller
             ]);
             $barang->decrement('stok', $request->jumlah);
             DB::commit();
-            return redirect()->route('transaksi.index')->with('success', 'Penjualan berhasil dicatat.');
+            return redirect()->route('catatan.index')->with('success', 'Penjualan berhasil dicatat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
