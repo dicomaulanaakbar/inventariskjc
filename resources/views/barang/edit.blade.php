@@ -26,6 +26,19 @@
                         </div>
 
                         <div class="row">
+                            <div class="mb-3">
+                            <label for="spesifikasi" class="form-label">Spesifikasi</label>
+                            <input type="text" name="spesifikasi" id="spesifikasi" 
+                                   class="form-control @error('nama_barang') is-invalid @enderror" 
+                                   value="{{ old('spesifikasi') }}" required>
+                            @error('spesifikasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                     </div>
+
+                        
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="kategori_id" class="form-label">Kategori</label>
                                 <select name="kategori_id" id="kategori_id" class="form-control" required>
