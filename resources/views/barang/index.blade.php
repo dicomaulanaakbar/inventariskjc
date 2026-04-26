@@ -1,49 +1,60 @@
 @extends('layouts.app')
 
+@section('title', 'Data Barang')
+
 @section('content')
-<div class="container">
-    <div class="d-flex justify-content-between mb-3">
-        <h2>Daftar Barang</h2>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Data Barang</h5>
         <a href="{{ route('barang.create') }}" class="btn btn-primary">+ Tambah Barang</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <div class="card-body">
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Kode</th>
-                <th>Nama</th>
-                <th>Kategori</th>
-                <th>Stok</th>
-                <th>Satuan</th>
-                <th>Harga Jual</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($barangs as $barang)
-            <tr>
-                <td>{{ $barang->kode_barang }}</td>
-                <td>{{ $barang->nama_barang }}</td>
-                <td>{{ $barang->kategori->nama_kategori ?? '-' }}</td>
-                <td>{{ $barang->stok }}</td>
-                <td>{{ $barang->satuan }}</td>
-                <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
-                <td>
-                    <a href="{{ route('barang.edit', $barang) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{{ route('barang.riwayat', $barang) }}" class="btn btn-sm btn-info">Riwayat</a>
-                    <form action="{{ route('barang.destroy', $barang) }}" method="POST" class="d-inline">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    {{ $barangs->links() }}
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama Barang</th>
+                    <th>Spesifikasi</th>
+                    <th>Supplier</th>
+                    <th>Kategori</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @forelse($barangs as $b)
+                <tr>
+                    <td>{{ $b->id }}</td>
+                    <td>{{ $b->nama_barang }}</td>
+                    <td>{{ $b->spesifikasi }}</td>
+                    <td>{{ $b->supplier->nama_supplier ?? '-' }}</td>
+                    <td>{{ $b->kategori->nama_kategori ?? '-' }}</td>
+                    <td>
+                        <a href="{{ route('barang.edit', $b->id) }}" class="btn btn-warning btn-sm">Edit</a>
+
+                        <form action="{{ route('barang.destroy', $b->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus data?')">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center">Belum ada data</td>
+                </tr>
+                @endforelse
+
+            </tbody>
+        </table>
+
+    </div>
 </div>
+
 @endsection

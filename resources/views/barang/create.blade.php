@@ -59,7 +59,7 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="stok" class="form-label">Stok Awal</label>
                             <input type="number" name="stok" id="stok" 
                                    class="form-control @error('stok') is-invalid @enderror" 
@@ -67,7 +67,7 @@
                             @error('stok')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
 
                         {{-- <div class="mb-3">
                             <label for="satuan" class="form-label">Satuan</label>
@@ -79,7 +79,7 @@
                             @enderror
                         </div> --}}
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="harga_beli" class="form-label">Harga Beli</label>
                             <input type="number" name="harga_beli" id="harga_beli" 
                                    class="form-control @error('harga_beli') is-invalid @enderror" 
@@ -97,7 +97,7 @@
                             @error('harga_jual')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
 
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Simpan</button>
