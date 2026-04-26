@@ -33,6 +33,7 @@ class BarangController extends Controller
         $request->validate([
             'kode_barang' => 'required|string|max:50|unique:barangs',
             'nama_barang' => 'required|string|max:100',
+            'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
             'supplier_id' => 'nullable|exists:suppliers,id'
         ]);
@@ -68,6 +69,7 @@ class BarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:100',
+            'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
             'supplier_id' => 'nullable|exists:suppliers,id',
             'satuan' => 'required|string|max:20',
@@ -76,7 +78,7 @@ class BarangController extends Controller
         ]);
 
         $barang->update($request->only([
-            'nama_barang', 'kategori_id', 'supplier_id', 'satuan', 'harga_beli', 'harga_jual'
+            'nama_barang', 'spesifikasi', 'kategori_id', 'supplier_id', 'satuan', 'harga_beli', 'harga_jual'
         ]));
 
         return redirect()->route('barang.index')
