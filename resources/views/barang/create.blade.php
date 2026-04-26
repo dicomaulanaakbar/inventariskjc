@@ -12,7 +12,7 @@
                     <form action="{{ route('barang.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="kode_barang" class="form-label">Kode Barang</label>
                             <input type="text" name="kode_barang" id="kode_barang" 
                                    class="form-control @error('kode_barang') is-invalid @enderror" 
@@ -20,7 +20,7 @@
                             @error('kode_barang')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="mb-3">
                             <label for="nama_barang" class="form-label">Nama Barang</label>
