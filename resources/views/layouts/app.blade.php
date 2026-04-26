@@ -57,7 +57,7 @@
                         @if(auth()->user()->role == 'admin')
                         <li class="nav-item">
                              <a class="nav-link {{ request()->routeIs('transaksi.*') ? 'active' : '' }}" href="{{ route('transaksi.index') }}">
-                            <i class="fas fa-cash-register"></i> Transaksi
+                            <i class="fas fa-solid fa-print"></i> Catatan Barang
                          </a>
                         </li>
                         @endif
