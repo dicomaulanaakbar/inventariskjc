@@ -23,7 +23,7 @@
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>Kode</th>
+                    <th>ID</th>
                     <th>Nama Barang</th>
                     <th>Spesifikasi</th>
                     <th>Supplier</th>

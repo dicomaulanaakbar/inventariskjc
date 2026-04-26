@@ -8,7 +8,7 @@
                 <div class="card-header">Detail Barang</div>
                 <div class="card-body">
                     <table class="table table-bordered">
-                        <tr><th>Kode</th><td>{{ $barang->kode_barang }}</td></tr>
+                        <tr><th>ID</th><td>{{ $barang->id }}</td></tr>
                         <tr><th>Nama</th><td>{{ $barang->nama_barang }}</td></tr>
                         <tr><th>Kategori</th><td>{{ $barang->kategori->nama_kategori ?? '-' }}</td></tr>
                         <tr><th>Supplier</th><td>{{ $barang->supplier->nama_supplier ?? '-' }}</td></tr>

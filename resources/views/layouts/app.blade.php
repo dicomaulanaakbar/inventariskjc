@@ -33,7 +33,7 @@
                     </li>
                     
                     @auth
-                        @if(auth()->user()->role == 'owner' || auth()->user()->role == 'admin' || auth()->user()->role == 'gudang')
+                        @if(auth()->user()->role == 'admin' || auth()->user()->role == 'gudang')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('barang.*') ? 'active' : '' }}" href="{{ route('barang.index') }}">
                                 <i class="fas fa-box me-1"></i> Data Barang

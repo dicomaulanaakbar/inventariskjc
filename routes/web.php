@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
     Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
 
+    //catatan
     Route::get('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
     Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
 

@@ -11,8 +11,8 @@
                         @csrf @method('PUT')
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Kode Barang</label>
-                                <input type="text" class="form-control" value="{{ $barang->kode_barang }}" disabled>
+                                 <label class="form-label">ID Barang</label>
+                                <input type="text" class="form-control" value="{{ $barang->id }}" disabled>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="nama_barang" class="form-label">Nama Barang</label>
