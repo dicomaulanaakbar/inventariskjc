@@ -29,7 +29,7 @@
                             <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal', date('Y-m-d')) }}" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('transaksi.index') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ route('catatan.index') }}" class="btn btn-secondary">Kembali</a>
                     </form>
                 </div>
             </div>

@@ -54,7 +54,7 @@
                     </li>
                         @endif
 
-                        @if(auth()->user()->role == 'admin')
+                        @if(auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                         <li class="nav-item">
                              <a class="nav-link {{ request()->routeIs('catatan.*') ? 'active' : '' }}" href="{{ route('catatan.index') }}">
                             <i class="fas fa-solid fa-print"></i> Catatan Barang
