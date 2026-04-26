@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nama_barang', 100);
+            $table->text('spesifikasi')->nullable();
              $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('restrict');
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');
         });
