@@ -76,14 +76,15 @@ class CatatanBarangController extends Controller
         }
     }
 
-    public function formStokKeluar(Request $request, ?Barang $barang = null)
+    public function formStokKeluar(Request $request, ?Barang $barangId = null)
     {
-        if ($barang) {
-            return view('catatan.stok-keluar', compact('barang'));
-        }
-
         $barangs = Barang::orderBy('nama_barang')->get();
-        return view('catatan.stok-keluar', compact('barangs'));
+        
+          if ($barangId && $barangId != 0) {
+        $barang = Barang::findOrFail($barangId);
+        return view('catatan.stok-keluar', compact('barangs', 'barang'));
+    }
+         return view('catatan.stok-keluar', compact('barangs'));
     }
 
      public function stokKeluar(Request $request)

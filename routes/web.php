@@ -45,14 +45,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('supplier', SupplierController::class);
 
 
-    // // Transaksi stok
-
-    // Route::get('/barang/{barang}/stok-masuk', [TransaksiController::class, 'formStokMasuk'])->name('stok.masuk.form');
-    // Route::post('/barang/{barang}/stok-masuk', [TransaksiController::class, 'stokMasuk'])->name('stok.masuk');
-    // Route::get('/barang/{barang}/stok-keluar', [TransaksiController::class, 'formStokKeluar'])->name('stok.keluar.form');
-    // Route::post('/barang/{barang}/stok-keluar', [TransaksiController::class, 'stokKeluar'])->name('stok.keluar');
-    // Route::get('/barang/{barang}/riwayat', [TransaksiController::class, 'riwayat'])->name('barang.riwayat');
-
     Route::get('/catatan', [CatatanBarangController::class, 'index'])->name('catatan.index');
     Route::get('/catatan/stok-masuk/{barang?}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
     Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
@@ -65,12 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
     Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
 
-    // //catatan
-    // Route::get('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
-    // Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
-
-    // Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])->name('stok.keluar.form');
-    // Route::post('/catatan/stok-keluar', [CatatanBarangController::class, 'stokKeluar'])->name('stok.keluar');
 });
 
     //kategori
