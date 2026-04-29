@@ -4,14 +4,14 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Catatan Barang</h2>
-        <div>
+        {{-- <div>
             <a href="{{ route('stok.masuk.form', ['barang' => 0]) }}" class="btn btn-success">
                 <i class="fas fa-arrow-down"></i> Stok Masuk
             </a>
             <a href="{{ route('stok.keluar.form') }}" class="btn btn-danger">
                 <i class="fas fa-arrow-up"></i> Stok Keluar
             </a>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Filter Tanggal -->
