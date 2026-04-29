@@ -12,7 +12,8 @@ class ReturBarang extends Model
     protected $table = 'returs';
     protected $fillable = [
         'tgl_return',
-        'alasan'
+        'alasan',
+        'status_retur'
     ];
 
     protected $casts = [

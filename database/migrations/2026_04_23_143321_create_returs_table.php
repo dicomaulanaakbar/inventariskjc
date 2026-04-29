@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('returs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->datetime('tgl_return');
             $table->string('alasan_retur', 100);
             $table->enum('status_retur', ['sukses', 'proses'])->default('belum ada');
         });
