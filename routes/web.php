@@ -57,6 +57,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
     Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
 
+    Route::get('/admin/supplier', function (){
+        //
+    })->middleware('role:admin');
+
+    // Route::Middleware(['auth', 'role:admin']-> group(function (){
+    //     Route::get('/admin/dashboard', )
+    // }))
+
+    
 });
 
     //kategori
