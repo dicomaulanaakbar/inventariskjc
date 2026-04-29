@@ -22,41 +22,50 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Riwayat Transaksi</div>
-                <div class="card-body">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk" type="button">Stok Masuk</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar" type="button">Stok Keluar</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-3">
-                        <div class="tab-pane fade show active" id="masuk">
-                            @if($barang->barangBeli->count())
-                                <ul>
-                                    @foreach($barang->barangBeli as $beli)
-                                        <li>{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }} - +{{ $beli->jumlah_barang }} (Rp {{ number_format($beli->total_biaya,0,',','.') }})</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <p>Belum ada stok masuk.</p>
-                            @endif
-                        </div>
-                        <div class="tab-pane fade" id="keluar">
-                            @if($barang->barangJualDetails->count())
-                                <ul>
-                                    @foreach($barang->barangJualDetails as $jual)
-                                        <li>{{ \Carbon\Carbon::parse($jual->barangJual->tgl_jual)->format('d/m/Y') }} - -{{ $jual->jumlah }} (Rp {{ number_format($jual->subtotal,0,',','.') }})</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <p>Belum ada stok keluar.</p>
-                            @endif
-                        </div>
-                    </div>
+    <div class="card">
+        <div class="card-header">Riwayat Transaksi</div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk" type="button">Stok Masuk</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar" type="button">Stok Keluar</button>
+                </li>
+            </ul>
+            <div class="tab-content mt-3">
+                <!-- Tab Stok Masuk -->
+                <div class="tab-pane fade show active" id="masuk">
+                    @if($barang->barangBeli->count())
+                        <ul>
+                            @foreach($barang->barangBeli as $beli)
+                                <li>
+                                    {{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }} 
+                                    - +{{ $beli->jumlah_barang }} 
+                                    (Rp {{ number_format($beli->total_biaya, 0, ',', '.') }})
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p>Belum ada stok masuk.</p>
+                    @endif
+                </div>
+
+                <!-- Tab Stok Keluar -->
+                <div class="tab-pane fade" id="keluar">
+                    @if($barang->barangJualDetails->count())
+                        <ul>
+                            @foreach($barang->barangJualDetails as $jual)
+                                <li>
+                                    {{ \Carbon\Carbon::parse($jual->barangJual->tgl_jual)->format('d/m/Y') }} 
+                                    - -{{ $jual->jumlah }} 
+                                    (Rp {{ number_format($jual->subtotal, 0, ',', '.') }})
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p>Belum ada stok keluar.</p>
+                    @endif
                 </div>
             </div>
         </div>
