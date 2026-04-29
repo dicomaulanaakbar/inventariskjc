@@ -65,6 +65,9 @@ Route::middleware('auth')->group(function () {
     //     Route::get('/admin/dashboard', )
     // }))
 
+    Route::get('/owner/laporan/keuangan', function (){
+        //
+    })->middleware('role:owner');
     
 });
 
