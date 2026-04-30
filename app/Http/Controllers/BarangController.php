@@ -9,10 +9,32 @@ use App\Models\Supplier;
 
 class BarangController extends Controller
 {
-     public function index()
+     public function index(Request $request)
     {
-        $barangs = Barang::with(['kategori', 'supplier'])->oldest()->paginate(10);
-        return view('barang.index', compact('barangs'));
+        $query = Barang::with('kategori', 'supplier');
+
+    // Pencarian berdasarkan nama barang
+    if ($request->filled('search')) {
+        $query->where('nama_barang', 'like', '%' . $request->search . '%');
+    }
+
+    // Filter berdasarkan kategori
+    if ($request->filled('kategori_id')) {
+        $query->where('kategori_id', $request->kategori_id);
+    }
+
+    // Filter berdasarkan supplier
+    if ($request->filled('supplier_id')) {
+        $query->where('supplier_id', $request->supplier_id);
+    }
+
+    $barangs = $query->latest()->paginate(10)->appends($request->all());
+
+    // Untuk dropdown filter
+    $kategoris = \App\Models\Kategori::all();
+    $suppliers = \App\Models\Supplier::all();
+
+    return view('barang.index', compact('barangs', 'kategoris', 'suppliers'));
     }
 
     /**

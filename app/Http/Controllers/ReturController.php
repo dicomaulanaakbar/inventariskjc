@@ -99,7 +99,7 @@ class ReturController extends Controller
 
     public function edit(ReturBarang $return)
     {
-        // Hanya admin/owner bisa edit (biasanya retur tidak diedit, tapi jika perlu)
+        
         return view('retur.edit', compact('return'));
     }
 
@@ -121,8 +121,7 @@ class ReturController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Kembalikan stok (jika dihapus, stok harus dikurangi lagi? Atau biarkan saja?)
-            // Karena retur sudah menambah stok, jika retur dihapus, stok harus dikurangi.
+           
             foreach ($return->details as $detail) {
                 $barang = Barang::find($detail->barang_id);
                 $barang->decrement('stok', $detail->jumlah);
@@ -136,7 +135,6 @@ class ReturController extends Controller
         }
     }
 
-    // API: Ambil detail penjualan untuk dropdown items (AJAX)
     public function getPenjualanDetails($id)
     {
         $details = BarangJualDetail::with('barang')->where('barang_jual_id', $id)->get();

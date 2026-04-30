@@ -9,11 +9,46 @@
         </a>
     </div>
 
+    <!-- Form Pencarian & Filter -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('barang.index') }}" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Cari Nama Barang</label>
+                    <input type="text" name="search" class="form-control" placeholder="Ketik nama barang..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Kategori</label>
+                    <select name="kategori_id" class="form-select">
+                        <option value="">Semua Kategori</option>
+                        @foreach($kategoris as $kat)
+                            <option value="{{ $kat->id }}" {{ request('kategori_id') == $kat->id ? 'selected' : '' }}>
+                                {{ $kat->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Supplier</label>
+                    <select name="supplier_id" class="form-select">
+                        <option value="">Semua Supplier</option>
+                        @foreach($suppliers as $sup)
+                            <option value="{{ $sup->id }}" {{ request('supplier_id') == $sup->id ? 'selected' : '' }}>
+                                {{ $sup->nama_supplier }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Filter</button>
+                    <a href="{{ route('barang.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
     <div class="card">
@@ -25,16 +60,16 @@
                         <th>Nama Barang</th>
                         <th>Kategori</th>
                         <th>Supplier</th>
-                        <!-- <th>Stok</th>
+                        <th>Stok</th>
                         <th>Satuan</th>
-                        <th>Harga Jual</th> -->
+                        <th>Harga Jual</th>
                         <th width="20%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($barangs as $barang)
                     <tr>
-                        <td>{{ $barang->formatted_id ?? $barang->id }}</td>
+                        <td>{{ $barang->id }}</td>
                         <td>{{ $barang->nama_barang }}</td>
                         <td>{{ $barang->kategori->nama_kategori ?? '-' }}</td>
                         <td>{{ $barang->supplier->nama_supplier ?? '-' }}</td>
@@ -46,32 +81,20 @@
                             @endif
                         </td>
                         <td>{{ $barang->satuan }}</td>
-                        <!-- <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td> -->
+                        <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
                         <td>
-                            <!-- Tombol Stok Masuk -->
-                            <a href="{{ route('stok.masuk.form', $barang->id) }}" class="btn btn-sm btn-success">
-                                <i class="fas fa-arrow-down"></i> Masuk
-                            </a>
-                            <!-- Tombol Stok Keluar -->
-                            <a href="{{ route('stok.keluar.form', $barang->id) }}" class="btn btn-sm btn-danger">
-                                <i class="fas fa-arrow-up"></i> Keluar
-                            </a>
-                            <!-- Tombol Edit -->
-                            <a href="{{ route('barang.edit', $barang) }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <!-- Tombol Hapus -->
+                            <a href="{{ route('stok.masuk.form', $barang->id) }}" class="btn btn-sm btn-success">Masuk</a>
+                            <a href="{{ route('stok.keluar.form', $barang->id) }}" class="btn btn-sm btn-danger">Keluar</a>
+                            <a href="{{ route('barang.edit', $barang) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('barang.destroy', $barang) }}" method="POST" class="d-inline">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus barang ini?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</button>
                             </form>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center">Belum ada data barang. <a href="{{ route('barang.create') }}">Tambah sekarang</a></td>
+                        <td colspan="8" class="text-center">Tidak ada data barang.</td>
                     </tr>
                     @endforelse
                 </tbody>
