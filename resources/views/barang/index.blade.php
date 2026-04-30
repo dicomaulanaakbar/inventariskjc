@@ -25,9 +25,9 @@
                         <th>Nama Barang</th>
                         <th>Kategori</th>
                         <th>Supplier</th>
-                        <th>Stok</th>
+                        <!-- <th>Stok</th>
                         <th>Satuan</th>
-                        <th>Harga Jual</th>
+                        <th>Harga Jual</th> -->
                         <th width="20%">Aksi</th>
                     </tr>
                 </thead>
@@ -46,7 +46,7 @@
                             @endif
                         </td>
                         <td>{{ $barang->satuan }}</td>
-                        <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
+                        <!-- <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td> -->
                         <td>
                             <!-- Tombol Stok Masuk -->
                             <a href="{{ route('stok.masuk.form', $barang->id) }}" class="btn btn-sm btn-success">

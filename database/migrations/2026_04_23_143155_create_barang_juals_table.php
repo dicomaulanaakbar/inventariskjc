@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->datetime('tgl_jual');
-            $table->enum('metode pembayaran', ['Qris', 'Tunai', 'Transfer'])->default('lainnya');
+            $table->enum('metode_pembayaran', ['Qris', 'Tunai', 'Transfer'])->default('lainnya');
         });
     }
 

@@ -12,8 +12,10 @@ class ReturBarang extends Model
     protected $table = 'returs';
     protected $fillable = [
         'tgl_return',
-        'alasan_returs',
-        'status_retur'
+        'alasan_retur',
+        'status_retur',
+        'barang_jual_id',
+        'keterangan'
     ];
 
     protected $casts = [
@@ -25,7 +27,7 @@ class ReturBarang extends Model
      */
     public function barangJual()
     {
-        return $this->hasOne(BarangJual::class);
+    return $this->belongsTo(BarangJual::class, 'barang_jual_id');
     }
 
     /**
@@ -33,6 +35,6 @@ class ReturBarang extends Model
      */
     public function details()
     {
-        return $this->hasMany(ReturDetail::class);
+    return $this->hasMany(ReturDetail::class, 'return_id');
     }
 }

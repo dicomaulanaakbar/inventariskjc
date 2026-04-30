@@ -70,6 +70,15 @@
                         </li>
                         @endif
 
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('penjualan.*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">
+                                <i class="fas fa-shopping-cart me-1"></i> Penjualan
+                            </a>
+                        </li>  
+
+                        @endif
+
                         @if(auth()->user()->role == 'owner')
                         <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown">
