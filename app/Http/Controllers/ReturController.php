@@ -28,7 +28,11 @@ class ReturController extends Controller
             ->orderBy('tgl_jual', 'desc')
             ->get();
 
-        return view('retur.create', compact('penjualan'));
+        $barang = Barang::all();
+
+        $barangs = BarangJual::with('barang')->get();
+
+        return view('retur.create', compact('penjualan', 'barang', 'barangs'));
     }
 
     public function store(Request $request)
@@ -47,7 +51,7 @@ class ReturController extends Controller
         try {
             // Ambil data penjualan
             $penjualan = BarangJual::findOrFail($request->barang_jual_id);
-            
+
             // Buat retur header
             $return = ReturBarang::create([
                 'tgl_return' => $request->tanggal,

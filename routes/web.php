@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ReturController;
+use App\Http\Controllers\PenjualanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,6 +42,9 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Barang (admin)
     Route::resource('barang', BarangController::class);
+
+    // penjualan
+    Route::resource('penjualan', PenjualanController::class)->middleware(['auth', 'role:admin']);
 
     // retur
     Route::resource('retur', ReturController::class)->middleware(['auth', 'role:admin']);

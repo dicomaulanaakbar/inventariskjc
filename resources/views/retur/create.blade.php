@@ -9,12 +9,14 @@
                     <form id="formRetur" method="POST" action="{{ route('retur.store') }}">
                         @csrf
                         <div class="mb-3">
-                            <label>Pilih Penjualan</label>
+                            <label>Pilih Barang retur </label>
                             <select name="barang_jual_id" id="penjualan_id" class="form-control" required>
-                                <option value="">-- Pilih Transaksi Penjualan --</option>
-                                @foreach($penjualan as $jual)
-                                <option value="{{ $jual->id }}">ID: {{ $jual->id }} - {{ $jual->tgl_jual->format('d/m/Y') }} - Total: Rp {{ number_format($jual->total_harga_jual) }}</option>
+                                <option value="">Pilih Barang Retur</option>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}">{{ $barang->id }} - {{ $barang->barang->nama_barang }} </option>
                                 @endforeach
+
+
                             </select>
                         </div>
 
