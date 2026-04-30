@@ -1,54 +1,30 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Tambah Retur Barang</h2>
-
     <div class="card">
-        <div class="card-header">
-            <strong>Form Retur</strong>
-        </div>
-
+        <div class="card-header">Detail Retur #{{ $return->id }}</div>
         <div class="card-body">
-            <form action="{{ route('retur.store') }}" method="POST">
-                @csrf
+            <table class="table table-bordered">
+                <tr><th>Tanggal Retur</th><td>{{ $return->tgl_return->format('d/m/Y H:i') }}</td></tr>
+                <tr><th>Penjualan ID</th><td>{{ $return->barang_jual_id }}</td></tr>
+                <tr><th>Alasan</th><td>{{ ucfirst($return->alasan) }}</td></tr>
+                <tr><th>Keterangan</th><td>{{ $return->keterangan ?? '-' }}</td></tr>
+                <tr><th>Total Item Retur</th><td>{{ $return->details->sum('jumlah') }} pcs</td></tr>
+            </table>
 
-                <input type="hidden" name="barang_id" value="{{ $barang->id }}">
+            <h5>Barang yang diretur</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Barang</th><th>Jumlah</th></tr></thead>
+                <tbody>
+                    @foreach($return->details as $detail)
+                    <tr><td>{{ $detail->barang->nama_barang }}</td><td>{{ $detail->jumlah }}</td></tr>
+                    @endforeach
+                </tbody>
+            </table>
 
-                <div class="mb-3">
-                    <label for="tgl_retur" class="form-label">Tanggal Retur</label>
-                    <input type="date" name="tgl_retur" id="tgl_retur"
-                           class="form-control @error('tgl_retur') is-invalid @enderror"
-                           value="{{ old('tgl_retur') }}" required>
-                    @error('tgl_retur')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="alasan" class="form-label">Alasan Retur</label>
-                    <textarea name="alasan" id="alasan" rows="3"
-                              class="form-control @error('alasan') is-invalid @enderror" required>{{ old('alasan') }}</textarea>
-                    @error('alasan')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                {{-- Jumlah retur (opsional) --}}
-                <!--
-                <div class="mb-3">
-                    <label for="jumlah" class="form-label">Jumlah Retur</label>
-                    <input type="number" name="jumlah" id="jumlah"
-                           class="form-control @error('jumlah') is-invalid @enderror"
-                           value="{{ old('jumlah', 1) }}" min="1">
-                    @error('jumlah')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                -->
-
-                <button type="submit" class="btn btn-primary">Submit Retur</button>
-            </form>
+            <a href="{{ route('return.index') }}" class="btn btn-secondary">Kembali</a>
+            <a href="{{ route('return.edit', $return) }}" class="btn btn-warning">Edit</a>
         </div>
     </div>
-
+</div>
+@endsection

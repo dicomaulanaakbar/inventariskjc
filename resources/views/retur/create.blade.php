@@ -1,76 +1,95 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8"> <div class="card shadow-sm">
-                <div class="card-header bg-white font-weight-bold">
-                    Tambah Retur Barang
-                </div>
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Tambah Retur Barang</div>
                 <div class="card-body">
                     <form id="formRetur" method="POST" action="{{ route('retur.store') }}">
                         @csrf
-
                         <div class="mb-3">
-                            <label for="nama_barang" class="form-label">Nama Barang</label>
-                            <input type="text" name="nama_barang" id="nama_barang"
-                                class="form-control @error('nama_barang') is-invalid @enderror"
-                                value="{{ old('nama_barang') }}" required>
-                            @error('nama_barang')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Pilih Penjualan</label>
+                            <select name="barang_jual_id" id="penjualan_id" class="form-control" required>
+                                <option value="">-- Pilih Transaksi Penjualan --</option>
+                                @foreach($penjualan as $jual)
+                                <option value="{{ $jual->id }}">ID: {{ $jual->id }} - {{ $jual->tgl_jual->format('d/m/Y') }} - Total: Rp {{ number_format($jual->total_harga_jual) }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="barang_id" class="form-label">Barang Id</label>
-                            <input type="number" name="barang_id" id="barang_id"
-                                class="form-control @error('barang_id') is-invalid @enderror"
-                                value="{{ old('barang_id') }}" required>
-                            @error('barang_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Tanggal Retur</label>
+                            <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="tgl_return" class="form-label">Tanggal Retur</label>
-                            <input type="date" name="tgl_return" id="tgl_return" class="form-control"
-                                value="{{ date('Y-m-d') }}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" for="alasan_retur">Alasan Retur</label>
-                            <select id="alasan_retur" name="alasan_retur" class="form-control" required>
+                            <label>Alasan Retur</label>
+                            <select name="alasan" class="form-control" required>
                                 <option value="rusak">Rusak</option>
-                                <option value="salah_kirim">Salah Kirim</option>
+                                <option value="salah_barang">Salah Barang</option>
                                 <option value="kadaluarsa">Kadaluarsa</option>
+                                <option value="lainnya">Lainnya</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-control" required>
-                                <option value="sukses">Sukses</option>
-                                <option value="proses">Proses</option>
-                            </select>
+                            <label>Keterangan (opsional)</label>
+                            <textarea name="keterangan" class="form-control" rows="2"></textarea>
                         </div>
 
-
-
-                        <div class="mb-4">
-                            <label class="form-label">Keterangan (opsional)</label>
-                            <textarea name="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan tambahan jika ada..."></textarea>
+                        <div id="items-container">
+                            <h5>Barang yang diretur</h5>
+                            <div class="alert alert-info" id="info-pilih-penjualan">Silakan pilih penjualan terlebih dahulu.</div>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                Simpan Retur
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan Retur</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.getElementById('penjualan_id').addEventListener('change', function() {
+        var penjualanId = this.value;
+        var container = document.getElementById('items-container');
+        if (!penjualanId) {
+            container.innerHTML = '<div class="alert alert-info">Silakan pilih penjualan terlebih dahulu.</div>';
+            return;
+        }
+
+        fetch('/retur/get-details/' + penjualanId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="alert alert-warning">Penjualan ini tidak memiliki detail barang.</div>';
+                    return;
+                }
+                var html = '<h5>Barang yang diretur</h5>';
+                data.forEach((item, idx) => {
+                    html += `
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <input type="hidden" name="items[${idx}][barang_id]" value="${item.barang_id}">
+                                <strong>${item.barang.nama_barang}</strong> (Terjual: ${item.jumlah})
+                            </div>
+                            <div class="col-md-3">
+                                <label>Jumlah Retur</label>
+                                <input type="number" name="items[${idx}][jumlah]" class="form-control" min="1" max="${item.jumlah}" required>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            })
+            .catch(err => {
+                container.innerHTML = '<div class="alert alert-danger">Gagal memuat detail penjualan.</div>';
+                console.error(err);
+            });
+    });
+</script>
+@endpush
 @endsection

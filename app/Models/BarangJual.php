@@ -26,4 +26,9 @@ class BarangJual extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function return()
+    {
+        return $this->hasOne(ReturBarang::class, 'barang_jual_id');
+    }
 }

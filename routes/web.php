@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('barang', BarangController::class);
 
     // retur
-    Route::resource('retur', ReturController::class);
+    Route::resource('retur', ReturController::class)->middleware(['auth', 'role:admin']);
 
     //supplier
     Route::resource('supplier', SupplierController::class);

@@ -1,153 +1,137 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ReturBarang;
 use App\Models\ReturDetail;
+use App\Models\BarangJual;
+use App\Models\BarangJualDetail;
 use App\Models\Barang;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReturController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $returs = ReturBarang::with('details.barang')->get();
-        return view('retur.index', compact('returs'));
+        $returns = ReturBarang::with('barangJual', 'details.barang')
+            ->orderBy('tgl_return', 'desc')
+            ->paginate(15);
+        return view('retur.index', compact('returns'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Request $request)
     {
-        $barangs = Barang::all();
-        return view('retur.create', compact('barangs'));
+        // Ambil semua penjualan yang belum diretur sepenuhnya (opsional)
+        $penjualan = BarangJual::with('details.barang')
+            ->whereDoesntHave('return')
+            ->orderBy('tgl_jual', 'desc')
+            ->get();
+
+        return view('retur.create', compact('penjualan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-         $request->validate([
-            'tgl_return' => 'required|date',
-            'alasan_retur' => 'required|string',
-            'barang_id' => 'required|exists:barangs,id',
-            'status'    => 'required|in:sukses,proses'
-        ]);
-        DB::beginTransaction();
-
-        try {
-
-            // ❗ CEK: barang sudah pernah diretur atau belum
-            $cek = ReturDetail::where('barang_id', $request->barang_id)->first();
-
-            if ($cek) {
-                return back()->with('error', 'Barang sudah pernah diretur, tidak boleh sama!');
-            }
-
-            // ✅ Simpan ke tabel retur_barang
-            $retur = ReturBarang::create([
-                'tgl_return' => $request->tgl_return,
-                'alasan_retur'    => $request->alasan_retur,
-            ]);
-
-            // ✅ Simpan detail (1 barang saja)
-            ReturDetail::create([
-                'retur_id' => $retur->id,
-                'barang_id'=> $request->barang_id,
-                'jumlah'   => $request->jumlah,
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('retur.index')
-                ->with('success', 'Retur berhasil disimpan');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $retur = ReturBarang::with('details.barang')->findOrFail($id);
-        return view('retur.show', compact('retur'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $retur = ReturBarang::with('details.barang')->findOrFail($id);
-        $barangs = Barang::all();
-        return view('retur.edit', compact('retur', 'barangs'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-     $request->validate([
-            'tgl_return' => 'required|date',
-            'alasan_retur' => 'required|string',
-            'barang_id' => 'required|exists:barangs,id',
-            'status'    => 'required|in:sukses,proses',
+        $request->validate([
+            'barang_jual_id' => 'required|exists:barang_juals,id',
+            'tanggal' => 'required|date',
+            'alasan' => 'required|string|max:50',
+            'keterangan' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.barang_id' => 'required|exists:barangs,id',
+            'items.*.jumlah' => 'required|integer|min:1',
         ]);
 
         DB::beginTransaction();
-
         try {
-            $retur = ReturBarang::findOrFail($id);
-            $retur->update([
-                'tgl_return' => $request->tgl_return,
-                'alasan_retur' => $request->alasan_retur,
-                'status' => $request->status,
+            // Ambil data penjualan
+            $penjualan = BarangJual::findOrFail($request->barang_jual_id);
+            
+            // Buat retur header
+            $return = ReturBarang::create([
+                'tgl_return' => $request->tanggal,
+                'alasan' => $request->alasan,
+                'barang_jual_id' => $penjualan->id,
+                'keterangan' => $request->keterangan,
             ]);
 
-            // Update detail (asumsi hanya 1 barang per retur)
-            $detail = ReturDetail::where('retur_id', $id)->first();
-            if ($detail) {
-                $detail->update([
-                    'barang_id' => $request->barang_id,
+            foreach ($request->items as $item) {
+                // Validasi jumlah retur tidak melebihi jumlah yang dibeli
+                $detailAsli = BarangJualDetail::where('barang_jual_id', $penjualan->id)
+                    ->where('barang_id', $item['barang_id'])
+                    ->first();
+                if (!$detailAsli || $item['jumlah'] > $detailAsli->jumlah) {
+                    throw new \Exception('Jumlah retur melebihi jumlah yang dibeli.');
+                }
+
+                // Simpan detail retur
+                ReturDetail::create([
+                    'return_id' => $return->id,
+                    'barang_id' => $item['barang_id'],
+                    'jumlah' => $item['jumlah'],
                 ]);
+
+                // Kembalikan stok barang (tambah stok)
+                $barang = Barang::find($item['barang_id']);
+                $barang->increment('stok', $item['jumlah']);
             }
 
             DB::commit();
-
-            return redirect()->route('retur.index')
-                ->with('success', 'Retur berhasil diupdate');
-
+            return redirect()->route('retur.index')->with('success', 'Retur berhasil dicatat.');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            return back()->with('error', 'Gagal mengupdate: ' . $e->getMessage());
+            Log::error('Gagal simpan retur: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage())->withInput();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function show(ReturBarang $return)
     {
-         $retur = ReturBarang::findOrFail($id);
-
-        ReturDetail::where('retur_id', $id)->delete();
-        $retur->delete();
-
-        return redirect()->route('retur.index')
-            ->with('success', 'Retur berhasil dihapus');
+        $return->load('barangJual', 'details.barang');
+        return view('retur.show', compact('return'));
     }
 
+    public function edit(ReturBarang $return)
+    {
+        // Hanya admin/owner bisa edit (biasanya retur tidak diedit, tapi jika perlu)
+        return view('retur.edit', compact('return'));
+    }
+
+    public function update(Request $request, ReturBarang $return)
+    {
+        $request->validate([
+            'alasan' => 'required|string',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $return->update($request->only(['alasan', 'keterangan']));
+        return redirect()->route('retur.show', $return)->with('success', 'Retur diperbarui.');
+    }
+
+    public function destroy(ReturBarang $return)
+    {
+        DB::beginTransaction();
+        try {
+            // Kembalikan stok (jika dihapus, stok harus dikurangi lagi? Atau biarkan saja?)
+            // Karena retur sudah menambah stok, jika retur dihapus, stok harus dikurangi.
+            foreach ($return->details as $detail) {
+                $barang = Barang::find($detail->barang_id);
+                $barang->decrement('stok', $detail->jumlah);
+            }
+            $return->delete();
+            DB::commit();
+            return redirect()->route('retur.index')->with('success', 'Retur dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal hapus retur.');
+        }
+    }
+
+    // API: Ambil detail penjualan untuk dropdown items (AJAX)
+    public function getPenjualanDetails($id)
+    {
+        $details = BarangJualDetail::with('barang')->where('barang_jual_id', $id)->get();
+        return response()->json($details);
+    }
 }
