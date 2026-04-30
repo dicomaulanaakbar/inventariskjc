@@ -30,7 +30,7 @@ class ReturController extends Controller
 
         $barang = Barang::all();
 
-        $barangs = BarangJual::with('barang')->get();
+        $barangs = BarangJual::with('details.barang')->get();
 
         return view('retur.create', compact('penjualan', 'barang', 'barangs'));
     }
@@ -55,9 +55,10 @@ class ReturController extends Controller
             // Buat retur header
             $return = ReturBarang::create([
                 'tgl_return' => $request->tanggal,
-                'alasan' => $request->alasan,
+                'alasan_retur' => $request->alasan,
                 'barang_jual_id' => $penjualan->id,
                 'keterangan' => $request->keterangan,
+                'status_retur' => 'proses',
             ]);
 
             foreach ($request->items as $item) {
@@ -78,7 +79,7 @@ class ReturController extends Controller
 
                 // Kembalikan stok barang (tambah stok)
                 $barang = Barang::find($item['barang_id']);
-                $barang->increment('stok', $item['jumlah']);
+                // $barang->increment('stok', $item['jumlah']);
             }
 
             DB::commit();
@@ -109,7 +110,10 @@ class ReturController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        $return->update($request->only(['alasan', 'keterangan']));
+        $return->update([
+            'alasan_retur' => $request->alasan,
+            'keterangan' => $request->keterangan,
+        ]);
         return redirect()->route('retur.show', $return)->with('success', 'Retur diperbarui.');
     }
 

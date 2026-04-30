@@ -35,7 +35,7 @@
                             @foreach($penjualans as $penjualan)
                                 <tr>
                                     <td>{{ $penjualan->id }}</td>
-                                    <td>{{ $penjualan->details->first()->barang->nama_barang ?? 'N/A' }}</td>
+                                    <td>{{ $penjualan->details?->first()?->barang?->nama_barang ?? 'N/A' }}</td>
                                     <td>{{ $penjualan->tgl_penjualan }}</td>
                                     <td>{{ $penjualan->jumlah }}</td>
                                     <td>{{ $penjualan->harga }}</td>

@@ -11,11 +11,15 @@
                         <div class="mb-3">
                             <label>Pilih Barang retur </label>
                             <select name="barang_jual_id" id="penjualan_id" class="form-control" required>
-                                <option value="">Pilih Barang Retur</option>
-                                @foreach($barangs as $barang)
-                                    <option value="{{ $barang->id }}">{{ $barang->id }} - {{ $barang->barang->nama_barang }} </option>
-                                @endforeach
+                                <option value="">Pilih Penjualan</option>
 
+                                @foreach($penjualan as $pj)
+                                    <option value="{{ $pj->id }}">
+                                        Transaksi #{{ $pj->id }} - 
+                                        {{ $pj->tgl_jual->format('d-m-Y') }} - 
+                                        {{ $pj->details->count() }} item
+                                    </option>
+                                @endforeach
 
                             </select>
                         </div>

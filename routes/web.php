@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('penjualan', PenjualanController::class)->middleware(['auth', 'role:admin']);
 
     // retur
+    Route::get('/retur/get-details/{id}', [ReturController::class, 'getPenjualanDetails']);
     Route::resource('retur', ReturController::class)->middleware(['auth', 'role:admin']);
 
     //supplier
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/supplier', function (){
         //
     })->middleware('role:admin');
+
 
     // Route::Middleware(['auth', 'role:admin']-> group(function (){
     //     Route::get('/admin/dashboard', )

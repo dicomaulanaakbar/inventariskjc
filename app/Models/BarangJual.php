@@ -12,7 +12,7 @@ class BarangJual extends Model
     protected $table = 'barang_juals';
     protected $fillable = [
         'tgl_jual',
-        'metode_pembayaran'
+        'metode_pembayaran',
     ];
 
     protected $casts = [
@@ -27,8 +27,13 @@ class BarangJual extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function return()
+    public function retur()
     {
         return $this->hasOne(ReturBarang::class, 'barang_jual_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(BarangJualDetail::class, 'barang_jual_id');
     }
 }

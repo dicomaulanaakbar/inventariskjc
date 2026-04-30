@@ -37,9 +37,9 @@
             <label for="metode_pembayaran" class="form-label">Metode pembayaran</label>
             <select name="metode_pembayaran" id="metode_pembayaran" class="form-control" required>
                 <option value="">Pilih Metode Pembayaran</option>
-                <option value="qris">Qris</option>
-                <option value="tunai">Tunai</option>
-                <option value="transfer">Transfer</option>
+                <option value="Qris">Qris</option>
+                <option value="Tunai">Tunai</option>
+                <option value="Transfer">Transfer</option>
                 <!-- Add more payment methods as needed -->
             </select>
         </div>

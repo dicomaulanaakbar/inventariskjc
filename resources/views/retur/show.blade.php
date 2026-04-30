@@ -5,9 +5,14 @@
         <div class="card-header">Detail Retur #{{ $return->id }}</div>
         <div class="card-body">
             <table class="table table-bordered">
-                <tr><th>Tanggal Retur</th><td>{{ $return->tgl_return->format('d/m/Y H:i') }}</td></tr>
+                <tr><th>Tanggal Retur</th><td>
+    {{ $return->tgl_return 
+        ? $return->tgl_return->format('d/m/Y H:i') 
+        : '-' 
+    }}
+</td>
                 <tr><th>Penjualan ID</th><td>{{ $return->barang_jual_id }}</td></tr>
-                <tr><th>Alasan</th><td>{{ ucfirst($return->alasan) }}</td></tr>
+                <tr><th>Alasan</th><td>{{ ucfirst($return->alasan_retur) }}</td></tr>
                 <tr><th>Keterangan</th><td>{{ $return->keterangan ?? '-' }}</td></tr>
                 <tr><th>Total Item Retur</th><td>{{ $return->details->sum('jumlah') }} pcs</td></tr>
             </table>
@@ -22,8 +27,10 @@
                 </tbody>
             </table>
 
-            <a href="{{ route('return.index') }}" class="btn btn-secondary">Kembali</a>
-            <a href="{{ route('return.edit', $return) }}" class="btn btn-warning">Edit</a>
+            <a href="{{ route('retur.index') }}" class="btn btn-secondary">Kembali</a>
+            @if($return && $return->id)
+    <a href="{{ route('retur.edit', $return->id) }}" class="btn btn-warning">Edit</a>
+@endif
         </div>
     </div>
 </div>

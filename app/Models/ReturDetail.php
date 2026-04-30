@@ -19,9 +19,9 @@ class ReturDetail extends Model
     /**
      * Relasi ke Return (header retur)
      */
-    public function return()
+    public function retur()
     {
-        return $this->belongsTo(ReturBarang::class);
+    return $this->belongsTo(ReturBarang::class, 'return_id');
     }
 
     /**
