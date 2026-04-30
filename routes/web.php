@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ReturController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,16 +23,16 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    
+
     // Tambahan route untuk update foto dan data tambahan
     Route::patch('/profile/update-profile', [ProfileController::class, 'updateProfile'])->name('profile.update.profile');
-    
+
     // Route untuk update password
     Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
-    
+
     // Route untuk hapus akun
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Barang (admin)
     Route::resource('barang', BarangController::class);
+
+    // retur
+    Route::resource('retur', ReturController::class);
 
     //supplier
     Route::resource('supplier', SupplierController::class);
@@ -68,7 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/owner/laporan/keuangan', function (){
         //
     })->middleware('role:owner');
-    
+
 });
 
     //kategori

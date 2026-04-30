@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>KJC Stok - @yield('title', 'Dashboard')</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome 5 (opsional, untuk ikon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <!-- Custom Styles -->
     @stack('styles')
 </head>
@@ -31,7 +31,7 @@
                             <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                         </a>
                     </li>
-                    
+
                     @auth
                         @if(auth()->user()->role == 'admin' || auth()->user()->role == 'gudang')
                         <li class="nav-item">
@@ -62,6 +62,14 @@
                         </li>
                         @endif
 
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('retur.*') ? 'active' : '' }}" href="{{ route('retur.index') }}">
+                                <i class="fas fa-undo me-1"></i> Barang Retur
+                            </a>
+                        </li>
+                        @endif
+
                         @if(auth()->user()->role == 'owner')
                         <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown">
@@ -81,7 +89,7 @@
                         @endif
                     @endauth
                 </ul>
-                
+
                 <!-- Right side (User menu) -->
                 <ul class="navbar-nav ms-auto">
                     @guest
@@ -139,7 +147,7 @@
 
             @if($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> 
+                    <i class="fas fa-exclamation-triangle me-2"></i>
                     <ul class="mb-0">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -155,7 +163,7 @@
 
     <!-- Bootstrap JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Custom Scripts -->
     @stack('scripts')
 </body>
