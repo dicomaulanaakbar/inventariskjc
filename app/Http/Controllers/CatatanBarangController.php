@@ -1,116 +1,132 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\BarangBeli;
 use App\Models\BarangJual;
 use App\Models\BarangJualDetail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CatatanBarangController extends Controller
 {
-    public function index(Request $request)
+    // ==================== STOK MASUK ====================
+    public function formStokMasuk($barangId = null)
     {
-        $start = $request->input('start', now()->startOfMonth()->format('Y-m-d'));
-        $end   = $request->input('end', now()->endOfMonth()->format('Y-m-d'));
+        $barangs = Barang::orderBy('nama_barang')->get();
+        $barang = null;
 
-         $pembelian = BarangBeli::with(['barang', 'user'])
-            ->whereBetween('tgl_pembelian', [$start, $end])
-            ->orderBy('tgl_pembelian', 'desc')
-            ->get();
+        if ($barangId) {
+            $barang = Barang::find($barangId);
+            if (!$barang) {
+                return redirect()->route('barang.index')->with('error', 'Barang tidak ditemukan.');
+            }
+        }
 
-         $penjualan = BarangJual::with(['user', 'details.barang'])
-            ->whereBetween('tgl_jual', [$start, $end])
-            ->orderBy('tgl_jual', 'desc')
-            ->get();
-
-          $totalPendapatan = BarangJual::whereBetween('tgl_jual', [$start, $end])->sum('total_harga_jual');
-
-       
-        $totalPengeluaran = BarangBeli::whereBetween('tgl_pembelian', [$start, $end])->sum('total_biaya');
-
-        
-        $labaKotor = $totalPendapatan - $totalPengeluaran;
-
-        return view('catatan.index', compact(
-            'pembelian', 'penjualan', 'start', 'end',
-            'totalPendapatan', 'totalPengeluaran', 'labaKotor'
-        ));
+        return view('catatan.stok-masuk', compact('barangs', 'barang'));
     }
 
-     public function formStokMasuk(Barang $barang)
+    public function stokMasuk(Request $request, $barangId = null)
     {
-        return view('catatan.stok-masuk', compact('barang'));
-    }
-
-      public function stokMasuk(Request $request, Barang $barang)
-    {
-         $request->validate([
+        // Validasi input
+        $rules = [
             'jumlah' => 'required|integer|min:1',
             'harga_beli_satuan' => 'required|integer|min:0',
-            'keterangan' => 'nullable|string',
             'tanggal' => 'required|date',
-        ]);
+            'keterangan' => 'nullable|string',
+        ];
+
+        // Jika tidak ada parameter barangId, harus pilih barang dari dropdown
+        if (!$barangId) {
+            $rules['barang_id'] = 'required|exists:barangs,id';
+        }
+
+        $request->validate($rules);
+
+        // Tentukan barang yang akan diproses
+        $barang = $barangId ? Barang::find($barangId) : Barang::find($request->barang_id);
+        if (!$barang) {
+            return redirect()->back()->with('error', 'Barang tidak ditemukan.');
+        }
 
         DB::beginTransaction();
         try {
-            $total_biaya = $request->jumlah * $request->harga_beli_satuan;
+            $total_bayar = $request->jumlah * $request->harga_beli_satuan;
+
             BarangBeli::create([
                 'barang_id' => $barang->id,
                 'tgl_pembelian' => $request->tanggal,
                 'jumlah_barang' => $request->jumlah,
-                'total_biaya' => $total_biaya,
+                'total_bayar' => $total_bayar,
                 'status_pembayaran' => 'lunas',
-                'user_id' => Auth::id(),  
+                'user_id' => Auth::id(),
+                'keterangan' => $request->keterangan,
             ]);
+
+            // Update stok barang
             $barang->increment('stok', $request->jumlah);
-            $barang->update(['harga_beli' => $request->harga_beli_satuan]);
+            // Update harga beli terakhir (optional)
+            $barang->harga_beli = $request->harga_beli_satuan;
+            $barang->save();
+
             DB::commit();
-            return redirect()->route('catatan.index')->with('success', 'Stok masuk berhasil dicatat.');
+            return redirect()->route('barang.index')->with('success', 'Stok masuk berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function formStokKeluar(Request $request, ?Barang $barangId = null)
+    // ==================== STOK KELUAR ====================
+    public function formStokKeluar($barangId = null)
     {
         $barangs = Barang::orderBy('nama_barang')->get();
-        
-          if ($barangId && $barangId != 0) {
-        $barang = Barang::findOrFail($barangId);
+        $barang = null;
+
+        if ($barangId) {
+            $barang = Barang::find($barangId);
+            if (!$barang) {
+                return redirect()->route('barang.index')->with('error', 'Barang tidak ditemukan.');
+            }
+        }
+
         return view('catatan.stok-keluar', compact('barangs', 'barang'));
     }
-         return view('catatan.stok-keluar', compact('barangs'));
-    }
 
-     public function stokKeluar(Request $request)
+    public function stokKeluar(Request $request)
     {
-         $request->validate([
+        $request->validate([
             'barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
             'harga_jual_satuan' => 'required|integer|min:0',
             'metode_pembayaran' => 'required|in:tunai,transfer,qris,cicil',
             'tanggal' => 'required|date',
+            'keterangan' => 'nullable|string',
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
+        $barang = Barang::find($request->barang_id);
+        if (!$barang) {
+            return redirect()->back()->with('error', 'Barang tidak ditemukan.');
+        }
+
         if ($barang->stok < $request->jumlah) {
-            return redirect()->back()->with('error', 'Stok tidak mencukupi!');
+            return redirect()->back()->with('error', "Stok tidak mencukupi. Stok tersedia: {$barang->stok}")->withInput();
         }
 
         DB::beginTransaction();
         try {
             $subtotal = $request->jumlah * $request->harga_jual_satuan;
+
+            // Buat header penjualan
             $penjualan = BarangJual::create([
                 'tgl_jual' => $request->tanggal,
                 'metode_pembayaran' => $request->metode_pembayaran,
                 'total_harga_jual' => $subtotal,
-                'user_id' => Auth::id(),  
+                'user_id' => Auth::id(),
             ]);
+
+            // Buat detail penjualan
             BarangJualDetail::create([
                 'barang_jual_id' => $penjualan->id,
                 'barang_id' => $barang->id,
@@ -118,12 +134,15 @@ class CatatanBarangController extends Controller
                 'harga_satuan' => $request->harga_jual_satuan,
                 'subtotal' => $subtotal,
             ]);
+
+            // Kurangi stok barang
             $barang->decrement('stok', $request->jumlah);
+
             DB::commit();
-            return redirect()->route('catatan.index')->with('success', 'Penjualan berhasil dicatat.');
+            return redirect()->route('barang.index')->with('success', 'Stok keluar (penjualan) berhasil dicatat.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
         }
     }
 }

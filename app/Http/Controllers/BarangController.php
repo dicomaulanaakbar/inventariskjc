@@ -28,7 +28,7 @@ class BarangController extends Controller
         $query->where('supplier_id', $request->supplier_id);
     }
 
-    $barangs = $query->latest()->paginate(10)->appends($request->all());
+    $barangs = $query->oldest()->paginate(10)->appends($request->all());
 
     // Untuk dropdown filter
     $kategoris = \App\Models\Kategori::all();

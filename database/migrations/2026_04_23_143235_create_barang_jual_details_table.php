@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('jumlah');
+            $table->decimal('harga_satuan', 15, 2);
+            $table->decimal('subtotal', 15, 2);
             $table->foreignId('barang_jual_id')->constrained('barang_juals')->onDelete('cascade');
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('restrict');
         });
