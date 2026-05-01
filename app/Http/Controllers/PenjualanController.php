@@ -61,6 +61,10 @@ class PenjualanController extends Controller
                 'jumlah' => $request->jumlah,
             ]);
 
+                $barang = Barang::find($request->barang_id);
+                $barang->decrement('stok', $request->jumlah);
+                $barang->save();
+
             DB::commit();
 
             return redirect()->route('penjualan.index')
