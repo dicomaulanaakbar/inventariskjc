@@ -24,7 +24,7 @@ class ReturController extends Controller
     {
         // Ambil semua penjualan yang belum diretur sepenuhnya (opsional)
         $penjualan = BarangJual::with('details.barang')
-            ->whereDoesntHave('return')
+            ->whereDoesntHave('retur')
             ->orderBy('tgl_jual', 'desc')
             ->get();
 
