@@ -160,14 +160,27 @@ class PenjualanController extends Controller
      */
     public function destroy(string $id)
     {
-        $penjualan = BarangJual::findOrFail($id);
+       $penjualan = BarangJual::with('details')->findOrFail($id);
 
-        // hapus detail dulu
-        BarangJualDetail::where('barang_jual_id', $id)->delete();
+    // ✅ Loop semua detail
+    foreach ($penjualan->details as $detail) {
 
-        $penjualan->delete();
+        $barang = Barang::find($detail->barang_id);
 
-        return redirect()->route('penjualan.index')
-            ->with('success', 'Penjualan berhasil dihapus');
+        // ✅ KEMBALIKAN STOK
+        if ($barang) {
+            $barang->stok += $detail->jumlah;
+            $barang->save();
+        }
+    }
+
+    // ✅ Hapus detail setelah stok dikembalikan
+    BarangJualDetail::where('barang_jual_id', $id)->delete();
+
+    // ✅ Hapus penjualan
+    $penjualan->delete();
+
+    return redirect()->route('penjualan.index')
+        ->with('success', 'Penjualan berhasil dihapus & stok kembali');
     }
 }
