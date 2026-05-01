@@ -61,8 +61,7 @@ class BarangController extends Controller
             'stok' => 'required|integer|min:0',
             'satuan' => 'required',
             'harga_beli' => 'required|integer',
-            'harga_jual' => 'required|integer',
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            'harga_jual' => 'required|integer'
         ]);
 
         Barang::create($request->all());

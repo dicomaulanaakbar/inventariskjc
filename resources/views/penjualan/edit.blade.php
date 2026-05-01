@@ -1,66 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white font-weight-bold d-flex justify-content-between align-items-center">
-                    <span>Daftar Penjualan</span>
-                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
-                    <a href="{{ route('penjualan.create') }}" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus me-1"></i> Edit Penjualan
-                    </a>
-                    @endif
+        <div class="col-md-8">
+
+            <div class="card">
+                <div class="card-header">
+                    Edit Penjualan
                 </div>
 
                 <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                    <form action="{{ route('penjualan.update', $penjualan->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nama Barang</th>
-                                <th>Tanggal Penjualan</th>
-                                <th>Jumlah</th>
-                                <th>Harga</th>
-                                <th>Total</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($penjualans as $penjualan)
-                                <tr>
-                                    <td>{{ $penjualan->id }}</td>
-                                    <td>{{ $penjualan->details->first()->barang->nama_barang ?? 'N/A' }}</td>
-                                    <td>{{ $penjualan->tgl_penjualan }}</td>
-                                    <td>{{ $penjualan->jumlah }}</td>
-                                    <td>{{ $penjualan->harga }}</td>
-                                    <td>{{ $penjualan->total }}</td>
-                                    <td>
-                                        <a href="{{ route('penjualan.show', $penjualan->id) }}" class="btn btn-info btn-sm">Lihat</a>
-                                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
-                                        <a href="{{ route('penjualan.edit', $penjualan->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        {{-- Tanggal --}}
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Penjualan</label>
+                            <input type="date" name="tgl_jual" class="form-control"
+                                value="{{ $penjualan->tgl_jual->format('Y-m-d') }}" required>
+                        </div>
 
-                                        <!-- Form Hapus -->
-                                        <form action="{{ route('penjualan.destroy', $penjualan->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penjualan ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                        {{-- Barang --}}
+                        <div class="mb-3">
+                            <label class="form-label">Nama Barang</label>
+                            <select name="barang_id" class="form-control" required>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}"
+                                        {{ $barang->id == $penjualan->details->first()?->barang_id ? 'selected' : '' }}>
+                                        {{ $barang->nama_barang }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Jumlah --}}
+                        <div class="mb-3">
+                            <label class="form-label">Jumlah</label>
+                            <input type="number" name="jumlah" class="form-control"
+                                value="{{ $penjualan->details->first()?->jumlah ?? 0 }}" required>
+                        </div>
+
+                        {{-- Harga --}}
+                        <div class="mb-3">
+                            <label class="form-label">Harga</label>
+                            <input type="number" name="harga" class="form-control"
+                                value="{{ $penjualan->details->first()?->barang?->harga_jual ?? 0 }}" required>
+                        </div>
+
+                        {{-- Total --}}
+                        <div class="mb-3">
+                            <label class="form-label">Total</label>
+                            <input type="number" name="total" class="form-control"
+                                value="{{ $penjualan->total ?? 0 }}" required>
+                        </div>
+
+                        {{-- Metode Pembayaran --}}
+                        <div class="mb-3">
+                            <label class="form-label">Metode Pembayaran</label>
+                            <select name="metode_pembayaran" class="form-control" required>
+                                <option value="Qris" {{ $penjualan->metode_pembayaran == 'Qris' ? 'selected' : '' }}>Qris</option>
+                                <option value="Tunai" {{ $penjualan->metode_pembayaran == 'Tunai' ? 'selected' : '' }}>Tunai</option>
+                                <option value="Transfer" {{ $penjualan->metode_pembayaran == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                                <!-- Tambahkan metode pembayaran lain jika diperlukan -->
+                            </select>
+                        </div>  
+
+                        <button type="submit" class="btn btn-primary">
+                            Update
+                        </button>
+                        <a href="{{ route('penjualan.index') }}" class="btn btn-secondary">
+                            Kembali
+                        </a>
+
+                    </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 @endsection
-

@@ -18,6 +18,8 @@ class ReturController extends Controller
             ->orderBy('tgl_return', 'desc')
             ->paginate(15);
         return view('retur.index', compact('returns'));
+
+
     }
 
     public function create(Request $request)
@@ -80,6 +82,8 @@ class ReturController extends Controller
                 // Kembalikan stok barang (tambah stok)
                 $barang = Barang::find($item['barang_id']);
                 // $barang->increment('stok', $item['jumlah']);
+
+                
             }
 
             DB::commit();
@@ -99,7 +103,7 @@ class ReturController extends Controller
 
     public function edit(ReturBarang $return)
     {
-        
+
         return view('retur.edit', compact('return'));
     }
 
@@ -121,7 +125,7 @@ class ReturController extends Controller
     {
         DB::beginTransaction();
         try {
-           
+
             foreach ($return->details as $detail) {
                 $barang = Barang::find($detail->barang_id);
                 $barang->decrement('stok', $detail->jumlah);

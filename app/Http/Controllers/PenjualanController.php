@@ -18,7 +18,7 @@ class PenjualanController extends Controller
      */
     public function index()
     {
-         $penjualans = BarangJual::with('user', 'details.barang')->latest()->get();
+         $penjualans = BarangJual::with('user', 'details.barang')->oldest()->get();
 
         return view('penjualan.index', compact('penjualans'));
     }
@@ -60,6 +60,10 @@ class PenjualanController extends Controller
                 'barang_id' => $request->barang_id,
                 'jumlah' => $request->jumlah,
             ]);
+
+                $barang = Barang::find($request->barang_id);
+                $barang->decrement('stok', $request->jumlah);
+                $barang->save();
 
             DB::commit();
 
@@ -106,6 +110,45 @@ class PenjualanController extends Controller
         $penjualan->update([
             'tgl_jual' => $request->tgl_jual,
             'metode_pembayaran' => $request->metode_pembayaran,
+        ]);
+
+        $detail = $penjualan->details->first();
+
+         // 🔴 DATA LAMA
+    $barangLama = Barang::find($detail->barang_id);
+    $jumlahLama = $detail->jumlah;
+
+    // 🟢 DATA BARU
+    $barangBaru = Barang::find($request->barang_id);
+    $jumlahBaru = $request->jumlah;
+
+    // ✅ 1. KEMBALIKAN STOK LAMA
+    $barangLama->stok += $jumlahLama;
+    $barangLama->save();
+
+    // ✅ 2. CEK STOK BARU
+    if ($barangBaru->stok < $jumlahBaru) {
+        return back()->with('error', 'Stok tidak cukup!');
+    }
+
+    // ✅ 3. KURANGI STOK BARU
+    $barangBaru->stok -= $jumlahBaru;
+    $barangBaru->save();
+
+    // ✅ 4. UPDATE PENJUALAN
+    $penjualan->update([
+        'tgl_jual' => $request->tgl_jual
+    ]);
+
+    // ✅ 5. UPDATE DETAIL
+    $detail->update([
+        'barang_id' => $request->barang_id,
+        'jumlah' => $jumlahBaru
+    ]);
+
+        $detail->update([
+            'barang_id' => $request->barang_id,
+            'jumlah' => $request->jumlah
         ]);
 
         return redirect()->route('penjualan.index')
