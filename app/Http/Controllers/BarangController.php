@@ -57,7 +57,10 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:100',
             'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
-            'supplier_id' => 'nullable|exists:suppliers,id'
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'stok' => 'required|integer|min:0',
+            'satuan' => 'required',
+            'harga_jual' => 'required|numeric|min:0',
         ]);
 
         Barang::create($request->all());

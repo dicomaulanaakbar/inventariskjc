@@ -15,6 +15,9 @@ class Barang extends Model
         'spesifikasi',
         'kategori_id',
         'supplier_id',
+        'stok',
+        'satuan',
+        'harga_jual'
     ];
 
     /**
