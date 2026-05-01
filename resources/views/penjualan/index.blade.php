@@ -36,7 +36,7 @@
                                     <tr>
                                     <td>{{ $penjualan->id }}</td>
                                     <td>{{ $penjualan->details->first()?->barang?->nama_barang ?? 'N/A' }}</td>
-                                    <td>{{ $penjualan->tgl_jual }}</td>
+                                    <td>{{ $penjualan->tgl_jual->format('d-m-Y') }}</td>
                                     <td>{{ $penjualan->details->first()?->jumlah ?? 0 }}</td>
                                     <td>Rp {{ number_format($penjualan->details->first()?->barang?->harga_jual ?? 0, 0, ',', '.') }}</td>
                                     <td>Rp {{ number_format(($penjualan->details->first()?->jumlah ?? 0) *($penjualan->details->first()?->barang?->harga_jual ?? 0), 0, ',', '.') }}</td>
