@@ -33,13 +33,13 @@
                         </thead>
                         <tbody>
                             @foreach($penjualans as $penjualan)
-                                <tr>
+                                    <tr>
                                     <td>{{ $penjualan->id }}</td>
-                                    <td>{{ $penjualan->details?->first()?->barang?->nama_barang ?? 'N/A' }}</td>
-                                    <td>{{ $penjualan->tgl_penjualan }}</td>
-                                    <td>{{ $penjualan->jumlah }}</td>
-                                    <td>{{ $penjualan->harga }}</td>
-                                    <td>{{ $penjualan->total }}</td>
+                                    <td>{{ $penjualan->details->first()?->barang?->nama_barang ?? 'N/A' }}</td>
+                                    <td>{{ $penjualan->tgl_jual }}</td>
+                                    <td>{{ $penjualan->details->first()?->jumlah ?? 0 }}</td>
+                                    <td>Rp {{ number_format($penjualan->details->first()?->barang?->harga_jual ?? 0, 0, ',', '.') }}</td>
+                                    <td>Rp {{ number_format(($penjualan->details->first()?->jumlah ?? 0) *($penjualan->details->first()?->barang?->harga_jual ?? 0), 0, ',', '.') }}</td>
                                     <td>
                                         <a href="{{ route('penjualan.show', $penjualan->id) }}" class="btn btn-info btn-sm">Lihat</a>
                                         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
@@ -52,6 +52,7 @@
                                             <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                         </form>
                                         @endif
+
                                     </td>
                                 </tr>
                             @endforeach

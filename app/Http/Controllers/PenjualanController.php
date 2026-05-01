@@ -18,7 +18,7 @@ class PenjualanController extends Controller
      */
     public function index()
     {
-         $penjualans = BarangJual::with('user', 'details.barang')->latest()->get();
+         $penjualans = BarangJual::with('user', 'details.barang')->oldest()->get();
 
         return view('penjualan.index', compact('penjualans'));
     }
