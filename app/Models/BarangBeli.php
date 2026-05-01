@@ -11,13 +11,8 @@ class BarangBeli extends Model
 
     protected $table = 'barang_belis';
     protected $fillable = [
-        'tgl_pembelian',
-        'jumlah_barang',
-        'total_biaya',
-        'status_pembayaran',
-        'user_id',
-        'barang_id'
-    ];
+    'barang_id', 'tgl_pembelian', 'jumlah_barang', 'total_bayar', 'status_pembayaran', 'user_id', 'keterangan'
+];
 
     protected $casts = [
         'tgl_pembelian' => 'datetime',
