@@ -11,7 +11,17 @@ class Barang extends Model
 
     protected $table = 'barangs';
     protected $fillable = [
+<<<<<<< HEAD
         'nama_barang', 'kategori_id', 'spesifikasi', 'stok', 'satuan', 'harga_beli', 'harga_jual'
+=======
+        'nama_barang',
+        'spesifikasi',
+        'kategori_id',
+        'supplier_id',
+        'stok',
+        'satuan',
+        'harga_jual'
+>>>>>>> d83e460b73b6ab92e814ed03f5d4c0f2659493e6
     ];
 
     /**

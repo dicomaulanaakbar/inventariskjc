@@ -57,11 +57,18 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:100',
             'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
+<<<<<<< HEAD
             // 'supplier_id' => 'nullable|exists:suppliers,id',
             'stok' => 'required|integer|min:0',
             'satuan' => 'required',
             'harga_beli' => 'required|integer',
             'harga_jual' => 'required|integer'
+=======
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'stok' => 'required|integer|min:0',
+            'satuan' => 'required',
+            'harga_jual' => 'required|numeric|min:0',
+>>>>>>> d83e460b73b6ab92e814ed03f5d4c0f2659493e6
         ]);
 
         Barang::create($request->all());
