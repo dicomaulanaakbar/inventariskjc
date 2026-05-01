@@ -18,6 +18,11 @@ return new class extends Migration
             $table->text('spesifikasi')->nullable();
              $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('restrict');
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');
+
+            $table->integer('stok')->default(0);
+            $table->string('satuan', 20)->default('pcs');
+            $table->decimal('harga_beli', 15, 2);
+            $table->decimal('harga_jual', 15, 2);
         });
     }
 

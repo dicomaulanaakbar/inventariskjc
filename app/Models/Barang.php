@@ -11,10 +11,7 @@ class Barang extends Model
 
     protected $table = 'barangs';
     protected $fillable = [
-        'nama_barang',
-        'spesifikasi',
-        'kategori_id',
-        'supplier_id',
+        'nama_barang', 'kategori_id', 'spesifikasi', 'stok', 'satuan', 'harga_beli', 'harga_jual'
     ];
 
     /**
@@ -55,5 +52,10 @@ class Barang extends Model
     public function returnDetails()
     {
         return $this->hasMany(ReturDetail::class);
+    }
+
+     public function transactions()
+    {
+        return $this->hasMany(StockTransaction::class);
     }
 }

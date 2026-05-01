@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama_supplier', 45);
             $table->string('kontak', 45)->nullable();
+            $table->text('alamat')->nullable();
+            $table->integer('stok')->default(0);
             $table->timestamps();
         });
     }

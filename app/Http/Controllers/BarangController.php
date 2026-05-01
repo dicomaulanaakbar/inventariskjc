@@ -57,7 +57,11 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:100',
             'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
-            'supplier_id' => 'nullable|exists:suppliers,id'
+            // 'supplier_id' => 'nullable|exists:suppliers,id',
+            'stok' => 'required|integer|min:0',
+            'satuan' => 'required',
+            'harga_beli' => 'required|integer',
+            'harga_jual' => 'required|integer'
         ]);
 
         Barang::create($request->all());
@@ -93,14 +97,15 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:100',
             'spesifikasi' => 'nullable|string',
             'kategori_id' => 'required|exists:kategoris,id',
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            // 'supplier_id' => 'nullable|exists:suppliers,id',
+            'stok' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'harga_beli' => 'required|integer|min:0',
             'harga_jual' => 'required|integer|min:0',
         ]);
 
         $barang->update($request->only([
-            'nama_barang', 'spesifikasi', 'kategori_id', 'supplier_id', 'satuan', 'harga_beli', 'harga_jual'
+            'nama_barang', 'spesifikasi', 'kategori_id','stok', 'satuan', 'harga_beli', 'harga_jual'
         ]));
 
         return redirect()->route('barang.index')

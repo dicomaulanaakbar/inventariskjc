@@ -33,9 +33,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="spesifikasi" class="form-label">Spesifikasi</label>
-                            <input type="text" name="spesifikasi" id="spesifikasi" 
+                            {{-- <input type="text" name="spesifikasi" id="spesifikasi" 
                                    class="form-control @error('nama_barang') is-invalid @enderror" 
-                                   value="{{ old('spesifikasi') }}" required>
+                                   value="{{ old('spesifikasi') }}" required> --}}
+
+                            <textarea type="text" name="spesifikasi" id="spesifikasi" 
+                                   class="form-control @error('nama_barang') is-invalid @enderror" 
+                                   value="{{ old('spesifikasi') }}" required></textarea>
                             @error('spesifikasi')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -56,7 +60,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="supplier_id" class="form-label">Supplier (Opsional)</label>
                             <select name="supplier_id" id="supplier_id" class="form-control">
                                 <option value="">Pilih Supplier</option>
@@ -66,9 +70,9 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
-                        <!-- <div class="mb-3">
+                        <div class="mb-3">
                             <label for="stok" class="form-label">Stok Awal</label>
                             <input type="number" name="stok" id="stok" 
                                    class="form-control @error('stok') is-invalid @enderror" 
@@ -76,9 +80,9 @@
                             @error('stok')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div> -->
+                        </div> 
 
-                        {{-- <div class="mb-3">
+                        <div class="mb-3">
                             <label for="satuan" class="form-label">Satuan</label>
                             <input type="text" name="satuan" id="satuan" 
                                    class="form-control @error('satuan') is-invalid @enderror" 
@@ -86,9 +90,9 @@
                             @error('satuan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div> --}}
+                        </div>
 
-                        <!-- <div class="mb-3">
+                         <div class="mb-3">
                             <label for="harga_beli" class="form-label">Harga Beli</label>
                             <input type="number" name="harga_beli" id="harga_beli" 
                                    class="form-control @error('harga_beli') is-invalid @enderror" 
@@ -106,7 +110,7 @@
                             @error('harga_jual')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div> -->
+                        </div> 
 
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Simpan</button>

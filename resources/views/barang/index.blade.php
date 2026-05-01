@@ -59,7 +59,7 @@
                         <th>ID</th>
                         <th>Nama Barang</th>
                         <th>Kategori</th>
-                        <th>Supplier</th>
+                        {{-- <th>Supplier</th> --}}
                         <th>Stok</th>
                         <th>Satuan</th>
                         <th>Harga Jual</th>
@@ -72,7 +72,7 @@
                         <td>{{ $barang->id }}</td>
                         <td>{{ $barang->nama_barang }}</td>
                         <td>{{ $barang->kategori->nama_kategori ?? '-' }}</td>
-                        <td>{{ $barang->supplier->nama_supplier ?? '-' }}</td>
+                        {{-- <td>{{ $barang->supplier->nama_supplier ?? '-' }}</td> --}}
                         <td>
                             @if($barang->stok <= 5)
                                 <span class="badge bg-danger">{{ $barang->stok }}</span>
@@ -83,12 +83,20 @@
                         <td>{{ $barang->satuan }}</td>
                         <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
                         <td>
-                            <a href="{{ route('stok.masuk.form', $barang->id) }}" class="btn btn-sm btn-success">Masuk</a>
-                            <a href="{{ route('stok.keluar.form', $barang->id) }}" class="btn btn-sm btn-danger">Keluar</a>
-                            <a href="{{ route('barang.edit', $barang) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{{ route('stok.masuk.form', $barang->id) }}" class="btn btn-sm btn-success">Masuk
+                                {{-- <i class="fas fa-arrow-down"></i> --}}
+                            </a>
+                            <a href="{{ route('stok.keluar.form', $barang->id) }}" class="btn btn-sm btn-danger">Keluar
+                                {{-- <i class="fas fa-arrow-up"></i> --}}
+                            </a>
+                            <a href="{{ route('barang.edit', $barang) }}" class="btn btn-sm btn-warning">Edit                                
+                                {{-- <i class="fas fa-edit"></i> --}}
+                            </a>
                             <form action="{{ route('barang.destroy', $barang) }}" method="POST" class="d-inline">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus
+                                    {{-- <i class="fas fa-trash"></i> --}}
+                                </button>
                             </form>
                         </td>
                     </tr>
