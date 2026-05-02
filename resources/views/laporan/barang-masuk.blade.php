@@ -37,19 +37,6 @@
                         <th>Petugas</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($pembelian as $beli)
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }}</td>
-                        <td>{{ $beli->barang->nama_barang ?? '-' }}</td>
-                        <td>{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? '' }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya / $beli->jumlah_barang, 0, ',', '.') }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya, 0, ',', '.') }}</td>
-                        <td>{{ $beli->user->name ?? '-' }}</td>
-                    </tr>
-                    @empty
-                        <tr><td colspan="6">Tidak ada data pembelian.</td></tr>
-                    @endforelse
 
                       @foreach($pembelian as $beli)
                     <tr>
@@ -57,7 +44,9 @@
                         <td>{{ $beli->supplier->nama_supplier ?? '-' }}</td>
                         <td>{{ $beli->barang->nama_barang }}</td>
                         <td>{{ $beli->jumlah_barang }}</td>
+                        <td>Rp {{ number_format($beli->harga_satuan, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($beli->total_bayar, 0, ',', '.') }}</td>
+                        <td>{{ $beli->user->name ?? '-' }}</td>
                     </tr>
                 @endforeach
                 </tbody>
