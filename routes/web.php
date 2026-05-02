@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('supplier', SupplierController::class);
 
 
-    Route::get('/catatan', [CatatanBarangController::class, 'index'])->name('catatan.index');
+    Route::resource('catatan', CatatanBarangController::class);
     Route::get('/catatan/stok-masuk/{barang?}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
     Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
     Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])->name('stok.keluar.form');
