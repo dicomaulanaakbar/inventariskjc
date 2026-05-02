@@ -28,7 +28,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+                {{-- <div class="col-md-3">
                     <label class="form-label">Supplier</label>
                     <select name="supplier_id" class="form-select">
                         <option value="">Semua Supplier</option>
@@ -38,7 +38,7 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary me-2">Filter</button>
                     <a href="{{ route('barang.index') }}" class="btn btn-secondary">Reset</a>

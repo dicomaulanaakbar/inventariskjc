@@ -98,5 +98,20 @@ class BarangController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $barang = Barang::findOrFail($id);
+        return view('barang.show', compact('barang'));
+    }
+
+    public function edit($id)
+    {
+        $barang = Barang::findOrFail($id);
+        $kategoris = Kategori::all();
+        $suppliers = Supplier::all(); // jika masih menggunakan supplier
+
+        return view('barang.edit', compact('barang', 'kategoris', 'suppliers'));
+    }
+
     // ... method show, edit, update, destroy tetap sama ...
 }
