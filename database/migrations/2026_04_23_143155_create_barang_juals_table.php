@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->datetime('tgl_jual');
-            $table->enum('metode_pembayaran', ['Qris', 'Tunai', 'Transfer'])->default('Tunai');
+            $table->enum('metode_pembayaran', ['qris', 'tunai', 'transfer'])->default('Tunai');
+             $table->decimal('total_harga_jual', 15, 2);
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('return_id')->nullable()->constrained('returns')->onDelete('set null');
+            $table->foreignId('retur_id')->nullable()->constrained('returs')->onDelete('set null');
         });
     }
 

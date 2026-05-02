@@ -11,9 +11,11 @@ class BarangJualDetail extends Model
 
     protected $table = 'barang_jual_details';
     protected $fillable = [
-        'jumlah',
         'barang_jual_id',
-        'barang_id'
+        'barang_id',
+        'jumlah',
+        'harga_satuan',
+        'subtotal'
     ];
 
     /**

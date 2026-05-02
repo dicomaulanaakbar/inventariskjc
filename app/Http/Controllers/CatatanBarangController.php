@@ -100,7 +100,7 @@ class CatatanBarangController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
             'harga_jual_satuan' => 'required|integer|min:0',
-            'metode_pembayaran' => 'required|in:tunai,transfer,qris,cicil',
+            'metode_pembayaran' => 'required|in:tunai,transfer,qris',
             'tanggal' => 'required|date',
             'keterangan' => 'nullable|string',
         ]);
@@ -118,7 +118,7 @@ class CatatanBarangController extends Controller
         try {
             $subtotal = $request->jumlah * $request->harga_jual_satuan;
 
-            // Buat header penjualan
+            
             $penjualan = BarangJual::create([
                 'tgl_jual' => $request->tanggal,
                 'metode_pembayaran' => $request->metode_pembayaran,
@@ -126,7 +126,7 @@ class CatatanBarangController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // Buat detail penjualan
+            
             BarangJualDetail::create([
                 'barang_jual_id' => $penjualan->id,
                 'barang_id' => $barang->id,
@@ -135,7 +135,7 @@ class CatatanBarangController extends Controller
                 'subtotal' => $subtotal,
             ]);
 
-            // Kurangi stok barang
+           
             $barang->decrement('stok', $request->jumlah);
 
             DB::commit();

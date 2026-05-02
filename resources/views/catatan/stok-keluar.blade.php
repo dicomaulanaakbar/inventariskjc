@@ -44,7 +44,6 @@
                                 <option value="tunai">Tunai</option>
                                 <option value="transfer">Transfer</option>
                                 <option value="qris">QRIS</option>
-                                <option value="cicil">Cicil</option>
                             </select>
                         </div>
 
@@ -55,7 +54,9 @@
 
                         <div class="mb-3">
                             <label>Keterangan (opsional)</label>
-                            <input type="text" name="keterangan" class="form-control" value="{{ old('keterangan') }}">
+                            {{-- <input type="text" name="keterangan" class="form-control" value="{{ old('keterangan') }}"> --}}
+
+                            <textarea type="text" name="keterangan" class="form-control" value="{{ old('keterangan') }}"></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-danger">Simpan Stok Keluar</button>
