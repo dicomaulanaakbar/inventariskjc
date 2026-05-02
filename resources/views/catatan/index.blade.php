@@ -88,29 +88,43 @@
     </div>
 
     <!-- Tabel Pembelian -->
-    <div class="card">
-        <div class="card-header bg-success text-white">Pembelian (Stok Masuk)</div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr><th>Tanggal</th><th>Barang</th><th>Jumlah</th><th>Harga Satuan</th><th>Total Biaya</th><th>Petugas</th></tr>
-                </thead>
-                <tbody>
-                    @forelse($pembelian as $beli)
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }}</td>
-                        <td>{{ $beli->barang->nama_barang ?? '-' }}</td>
-                        <td>{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? '' }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya / $beli->jumlah_barang, 0, ',', '.') }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya, 0, ',', '.') }}</td>
-                        <td>{{ $beli->user->name ?? '-' }}</td>
-                    </tr>
-                    @empty
-                        <tr><td colspan="6">Tidak ada pembelian pada periode ini.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <!-- Tabel Pembelian -->
+<div class="card">
+    <div class="card-header bg-success text-white">Pembelian (Stok Masuk)</div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Barang</th>
+                    <th>Jumlah</th>
+                    <th>Harga Satuan</th>
+                    <th>Total Biaya</th>
+                    <th>Petugas</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($pembelian as $beli)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }}</td>
+                    <td>{{ $beli->barang->nama_barang ?? '-' }}</td>
+                    <td>{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? '' }}</td>
+
+                    {{-- PERBAIKAN DI SINI: Menggunakan harga_beli dari relasi barang agar sinkron --}}
+                    <td>Rp {{ number_format($beli->barang->harga_beli ?? 0, 0, ',', '.') }}</td>
+
+                    {{-- PERBAIKAN DI SINI: Menggunakan total_bayar (sesuai nama kolom di DB) --}}
+                    <td>Rp {{ number_format($beli->total_bayar ?? 0, 0, ',', '.') }}</td>
+
+                    <td>{{ $beli->user->name ?? $beli->user_id }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center">Tidak ada pembelian pada periode ini.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection
