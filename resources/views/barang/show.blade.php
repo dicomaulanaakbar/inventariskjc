@@ -49,6 +49,15 @@
                     @else
                         <p>Belum ada stok masuk.</p>
                     @endif
+
+                    @foreach($barang->barangBeli as $beli)
+                    <li>
+                        {{ $beli->tgl_pembelian->format('d/m/Y') }} - 
+                        +{{ $beli->jumlah_barang }} 
+                        dari supplier: {{ $beli->supplier->nama_supplier ?? '-' }}
+                        (Rp {{ number_format($beli->total_bayar, 0, ',', '.') }})
+                    </li>
+                @endforeach
                 </div>
 
                 <!-- Tab Stok Keluar -->

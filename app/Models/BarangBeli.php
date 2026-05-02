@@ -11,7 +11,7 @@ class BarangBeli extends Model
 
     protected $table = 'barang_belis';
     protected $fillable = [
-    'barang_id', 'tgl_pembelian', 'jumlah_barang', 'total_bayar', 'status_pembayaran', 'user_id', 'keterangan'
+    'barang_id', 'supplier_id', 'tgl_pembelian', 'jumlah_barang', 'total_bayar', 'status_pembayaran', 'user_id', 'keterangan'
 ];
 
     protected $casts = [
@@ -32,5 +32,10 @@ class BarangBeli extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 }

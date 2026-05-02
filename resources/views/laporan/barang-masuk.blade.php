@@ -29,6 +29,7 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
+                        <th>Supplier</th>
                         <th>Nama Barang</th>
                         <th>Jumlah</th>
                         <th>Harga Satuan</th>
@@ -49,6 +50,16 @@
                     @empty
                         <tr><td colspan="6">Tidak ada data pembelian.</td></tr>
                     @endforelse
+
+                      @foreach($pembelian as $beli)
+                    <tr>
+                        <td>{{ $beli->tgl_pembelian->format('d/m/Y') }}</td>
+                        <td>{{ $beli->supplier->nama_supplier ?? '-' }}</td>
+                        <td>{{ $beli->barang->nama_barang }}</td>
+                        <td>{{ $beli->jumlah_barang }}</td>
+                        <td>Rp {{ number_format($beli->total_bayar, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
             {{ $pembelian->appends(['start' => $start, 'end' => $end])->links() }}
