@@ -60,7 +60,7 @@ class PenjualanController extends Controller
             'tgl_jual' => $request->tgl_jual,
             'metode_pembayaran' => $request->metode_pembayaran,
             'total_harga_jual' => $totalHargaJual, // Pastikan variabel ini ada nilainya!
-            'user_id' => auth()->id(),
+             'user_id' => Auth::id(), 
         ]);
 
         // 4. SIMPAN KE MODEL BarangJualDetail (image_69894e.png)
