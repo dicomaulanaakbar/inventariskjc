@@ -37,66 +37,55 @@ class PenjualanController extends Controller
      */
     public function store(Request $request)
 {
-    // 1. Validasi
     $request->validate([
         'tgl_jual' => 'required|date',
-        'metode_pembayaran' => 'required',
-        'barang_id' => 'required|array', // Asumsi input barang berupa array
-        'jumlah' => 'required|array',
+        'metode_pembayaran' => 'required|in:qris,tunai,transfer',
+        'barang_id' => 'required|exists:barangs,id',
+        'jumlah' => 'required|integer|min:1',
+]);
+
+   DB::beginTransaction();
+
+try {
+    $barang = Barang::findOrFail($request->barang_id);
+
+    if ($barang->stok < $request->jumlah) {
+        return back()->with('error', 'Stok tidak cukup');
+    }
+
+    $total = $barang->harga_jual * $request->jumlah;
+
+    // HEADER
+    $penjualan = BarangJual::create([
+        'tgl_jual' => $request->tgl_jual,
+        'metode_pembayaran' => $request->metode_pembayaran,
+        'user_id' => Auth::id(),
+        'total_harga_jual' => $total,
     ]);
 
-    DB::beginTransaction();
-    try {
-        // 2. HITUNG TOTAL TERLEBIH DAHULU
-        // Ini kunci agar tidak error "NOT NULL constraint failed"
-        $totalHargaJual = 0;
-        foreach ($request->barang_id as $key => $id) {
-            $barang = \App\Models\Barang::find($id);
-            $totalHargaJual += $barang->harga_jual * $request->jumlah[$key];
-        }
+    // DETAIL
+    BarangJualDetail::create([
+        'barang_jual_id' => $penjualan->id,
+        'barang_id' => $request->barang_id,
+        'jumlah' => $request->jumlah,
+        'harga_satuan' => $barang->harga_jual,
+        'subtotal' => $total,
+    ]);
 
-        // 3. SIMPAN KE MODEL BarangJual (image_a71607.png)
-        $penjualan = \App\Models\BarangJual::create([
-            'tgl_jual' => $request->tgl_jual,
-            'metode_pembayaran' => $request->metode_pembayaran,
-            'total_harga_jual' => $totalHargaJual, // Pastikan variabel ini ada nilainya!
-             'user_id' => Auth::id(), 
-        ]);
+    // KURANGI STOK
+    $barang->decrement('stok', $request->jumlah);
 
-        // 4. SIMPAN KE MODEL BarangJualDetail (image_69894e.png)
-        foreach ($request->barang_id as $key => $id) {
-            $barang = \App\Models\Barang::find($id);
-            $subtotal = $barang->harga_jual * $request->jumlah[$key];
+    DB::commit();
 
-            \App\Models\BarangJualDetail::create([
-                'barang_jual_id' => $penjualan->id, // Hubungkan ke ID induk
-                'barang_id' => $id,
-                'jumlah' => $request->jumlah[$key],
-                'harga_satuan' => $barang->harga_jual,
-                'subtotal' => $subtotal,
-            ]);
+    return redirect()->route('penjualan.index')
+                         ->with('success', 'Berhasil disimpan');
 
-            // 5. Kurangi stok barang asli
-            $barang->decrement('stok', $request->jumlah[$key]);
-        }
 
-        DB::commit();
-        return redirect()->back()->with('success', 'Transaksi berhasil disimpan!');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
-    }
+} catch (\Exception $e) {
+    DB::rollback();
+    return back()->with('error', $e->getMessage());
 }
-    public function show(string $id)
-    {
-        $penjualan = BarangJual::with('details.barang')->findOrFail($id);
-        return view('penjualan.show', compact('penjualan'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+}
     public function edit(string $id)
     {
         $penjualan = BarangJual::with('details.barang')->findOrFail($id);

@@ -60,12 +60,12 @@
                         <div class="mb-3">
                             <label class="form-label">Metode Pembayaran</label>
                             <select name="metode_pembayaran" class="form-control" required>
-                                <option value="Qris" {{ $penjualan->metode_pembayaran == 'Qris' ? 'selected' : '' }}>Qris</option>
-                                <option value="Tunai" {{ $penjualan->metode_pembayaran == 'Tunai' ? 'selected' : '' }}>Tunai</option>
-                                <option value="Transfer" {{ $penjualan->metode_pembayaran == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                                <option value="qris" {{ $penjualan->metode_pembayaran == 'qris' ? 'selected' : '' }}>Qris</option>
+                                <option value="tunai" {{ $penjualan->metode_pembayaran == 'tunai' ? 'selected' : '' }}>Tunai</option>
+                                <option value="transfer" {{ $penjualan->metode_pembayaran == 'transfer' ? 'selected' : '' }}>Transfer</option>
                                 <!-- Tambahkan metode pembayaran lain jika diperlukan -->
                             </select>
-                        </div>  
+                        </div>
 
                         <button type="submit" class="btn btn-primary">
                             Update
