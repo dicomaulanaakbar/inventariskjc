@@ -20,6 +20,7 @@
     </form>
 
     <div class="alert alert-info">
+        {{-- Sinkronisasi nama variabel $totalPembelian sesuai Controller --}}
         <strong>Total Pembelian: Rp {{ number_format($totalPembelian, 0, ',', '.') }}</strong>
     </div>
 
@@ -37,32 +38,32 @@
                         <th>Petugas</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($pembelian as $beli)
+                <tbody> {{-- Tambahkan tag pembuka tbody yang hilang --}}
+                    @foreach($pembelian as $beli)
                     <tr>
+                        {{-- Gunakan parse jika tgl_pembelian bukan instance Carbon --}}
                         <td>{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }}</td>
-                        <td>{{ $beli->barang->nama_barang ?? '-' }}</td>
-                        <td>{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? '' }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya / $beli->jumlah_barang, 0, ',', '.') }}</td>
-                        <td>Rp {{ number_format($beli->total_biaya, 0, ',', '.') }}</td>
+                        <td>{{ $beli->supplier->nama_supplier ?? '-' }}</td>
+                        <td>{{ $beli->barang->nama_barang ?? 'Barang Terhapus' }}</td>
+                        <td>{{ $beli->jumlah_barang }}</td>
+
+                        {{-- PERBAIKAN HARGA SATUAN: Hitung otomatis agar tidak Rp 0 lagi --}}
+                        <td>
+                            Rp {{ number_format($beli->jumlah_barang > 0 ? ($beli->total_bayar / $beli->jumlah_barang) : 0, 0, ',', '.') }}
+                        </td>
+
+                        {{-- PERBAIKAN TOTAL: Gunakan kolom total_bayar sesuai database --}}
+                        <td>Rp {{ number_format($beli->total_bayar, 0, ',', '.') }}</td>
+
                         <td>{{ $beli->user->name ?? '-' }}</td>
                     </tr>
-                    @empty
-                        <tr><td colspan="6">Tidak ada data pembelian.</td></tr>
-                    @endforelse
-
-                      @foreach($pembelian as $beli)
-                    <tr>
-                        <td>{{ $beli->tgl_pembelian->format('d/m/Y') }}</td>
-                        <td>{{ $beli->supplier->nama_supplier ?? '-' }}</td>
-                        <td>{{ $beli->barang->nama_barang }}</td>
-                        <td>{{ $beli->jumlah_barang }}</td>
-                        <td>Rp {{ number_format($beli->total_bayar, 0, ',', '.') }}</td>
-                    </tr>
-                @endforeach
+                    @endforeach
                 </tbody>
             </table>
-            {{ $pembelian->appends(['start' => $start, 'end' => $end])->links() }}
+            {{-- Pagination --}}
+            <div class="mt-3">
+                {{ $pembelian->appends(['start' => $start, 'end' => $end])->links() }}
+            </div>
         </div>
     </div>
 </div>
