@@ -36,6 +36,18 @@
                             </div>
                         @endif
 
+                <div class="mb-3">
+                    <label for="supplier_id" class="form-label">Supplier</label>
+                    <select name="supplier_id" id="supplier_id" class="form-control">
+                        <option value="">-- Pilih Supplier  --</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                {{ $supplier->nama_supplier }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                         <div class="mb-3">
                             <label>Jumlah</label>
                             <input type="number" name="jumlah" class="form-control" value="{{ old('jumlah') }}" required>

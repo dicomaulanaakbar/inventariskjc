@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\BarangBeli;
 use App\Models\BarangJual;
 use App\Models\BarangJualDetail;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -68,12 +69,13 @@ class CatatanBarangController extends Controller
     {
         $barangs = Barang::orderBy('nama_barang')->get();
         $barang = $barangId ? Barang::find($barangId) : null;
+        $suppliers = Supplier::orderBy('nama_supplier')->get();
 
         if ($barangId && !$barang) {
             return redirect()->route('barang.index')->with('error', 'Barang tidak ditemukan.');
         }
 
-        return view('catatan.stok-masuk', compact('barangs', 'barang'));
+        return view('catatan.stok-masuk', compact('barangs', 'barang', 'suppliers'));
     }
 
     public function stokMasuk(Request $request, $barangId = null)
@@ -83,6 +85,7 @@ class CatatanBarangController extends Controller
             'harga_beli_satuan' => 'required|numeric|min:0',
             'tanggal' => 'required|date',
             'barang_id' => $barangId ? 'nullable' : 'required|exists:barangs,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
         ]);
 
         $barang = $barangId ? Barang::find($barangId) : Barang::find($request->barang_id);
@@ -91,6 +94,7 @@ class CatatanBarangController extends Controller
         try {
             BarangBeli::create([
                 'barang_id' => $barang->id,
+                'supplier_id' => $request->supplier_id,
                 'tgl_pembelian' => $request->tanggal,
                 'jumlah_barang' => $request->jumlah,
                 'total_bayar' => $request->jumlah * $request->harga_beli_satuan,

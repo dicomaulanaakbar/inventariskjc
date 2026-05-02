@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('restrict');
+            $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');
         });
     }
 
