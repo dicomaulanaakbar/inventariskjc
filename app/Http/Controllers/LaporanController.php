@@ -6,9 +6,9 @@ use App\Models\Barang;
 use App\Models\BarangBeli;
 use App\Models\BarangJual;
 use App\Models\BarangJualDetail;
-use App\Models\Supplier; // Tambahkan ini
+use App\Models\Supplier;
 use Illuminate\Http\Request;
-use Carbon\Carbon; // Tambahkan ini untuk pengelolaan tanggal yang lebih baik
+use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
@@ -20,12 +20,10 @@ class LaporanController extends Controller
 
     public function keuangan(Request $request)
     {
-        // 1. Inisialisasi Filter Tanggal
+        
         $start = $request->input('start', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end   = $request->input('end', Carbon::now()->endOfMonth()->format('Y-m-d'));
 
-        // 2. Menghitung Ringkasan Keuangan
-        // PERBAIKAN: Nama kolom disesuaikan menjadi 'total_bayar' sesuai image_cf2e00.png
         $totalPendapatan = BarangJual::whereBetween('tgl_jual', [$start, $end])->sum('total_harga_jual');
         $totalPengeluaran = BarangBeli::whereBetween('tgl_pembelian', [$start, $end])->sum('total_bayar');
         $laba = $totalPendapatan - $totalPengeluaran;
@@ -43,13 +41,11 @@ class LaporanController extends Controller
         $start = $request->input('start', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $end   = $request->input('end', Carbon::now()->endOfMonth()->format('Y-m-d'));
 
-        // 3. Menampilkan Data Barang Masuk (Ditambah relasi supplier)
-        $pembelian = BarangBeli::with(['barang', 'user', 'supplier']) // Tambahkan supplier
+        $pembelian = BarangBeli::with(['barang', 'user', 'supplier']) 
             ->whereBetween('tgl_pembelian', [$start, $end])
             ->orderBy('tgl_pembelian', 'desc')
             ->paginate(20);
 
-        // PERBAIKAN: Nama kolom disesuaikan menjadi 'total_bayar'
         $totalPembelian = BarangBeli::whereBetween('tgl_pembelian', [$start, $end])->sum('total_bayar');
 
         return view('laporan.barang-masuk', compact('start', 'end', 'pembelian', 'totalPembelian'));
