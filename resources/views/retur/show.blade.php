@@ -1,36 +1,88 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="container">
-    <div class="card">
-        <div class="card-header">Detail Retur #{{ $return->id }}</div>
+    <div class="card shadow">
+        <div class="card-header">
+            <h5 class="mb-0">Detail Retur #{{ $retur->id }}</h5>
+        </div>
+
         <div class="card-body">
+
+            <!-- INFORMASI UTAMA -->
             <table class="table table-bordered">
-                <tr><th>Tanggal Retur</th><td>
-    {{ $return->tgl_return 
-        ? $return->tgl_return->format('d/m/Y H:i') 
-        : '-' 
-    }}
-</td>
-                <tr><th>Penjualan ID</th><td>{{ $return->barang_jual_id }}</td></tr>
-                <tr><th>Alasan</th><td>{{ ucfirst($return->alasan_retur) }}</td></tr>
-                <tr><th>Keterangan</th><td>{{ $return->keterangan ?? '-' }}</td></tr>
-                <tr><th>Total Item Retur</th><td>{{ $return->details->sum('jumlah') }} pcs</td></tr>
+                <tr>
+                    <th width="30%">Tanggal Retur</th>
+                    <td>
+                        {{ $retur->tgl_return
+                            ? \Carbon\Carbon::parse($retur->tgl_return)->format('d/m/Y')
+                            : '-'
+                        }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Penjualan ID</th>
+                    <td>{{ $retur->barang_jual_id ?? '-' }}</td>
+                </tr>
+
+                <tr>
+                    <th>Alasan</th>
+                    <td>{{ $retur->alasan_retur ?? '-' }}</td>
+                </tr>
+
+                <tr>
+                    <th>Keterangan</th>
+                    <td>{{ $retur->keterangan ?? '-' }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <span class="badge bg-{{ $retur->status_retur == 'selesai' ? 'success' : 'warning' }}">
+                            {{ ucfirst($retur->status_retur) }}
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Total Item Retur</th>
+                    <td>{{ $retur->details->sum('jumlah') }} pcs</td>
+                </tr>
             </table>
 
-            <h5>Barang yang diretur</h5>
-            <table class="table table-sm">
-                <thead><tr><th>Barang</th><th>Jumlah</th></tr></thead>
+            <!-- DETAIL BARANG -->
+            <h5 class="mt-4">Barang yang Diretur</h5>
+
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th width="150">Jumlah</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    @foreach($return->details as $detail)
-                    <tr><td>{{ $detail->barang->nama_barang }}</td><td>{{ $detail->jumlah }}</td></tr>
-                    @endforeach
+                    @forelse($retur->details as $detail)
+                        <tr>
+                            <td>{{ $detail->barang->nama_barang ?? '-' }}</td>
+                            <td>{{ $detail->jumlah }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">
+                                Tidak ada data barang retur
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
 
-            <a href="{{ route('retur.index') }}" class="btn btn-secondary">Kembali</a>
-            @if($return && $return->id)
-    <a href="{{ route('retur.edit', $return->id) }}" class="btn btn-warning">Edit</a>
-@endif
+            <!-- BUTTON -->
+            <div class="mt-3">
+                <a href="{{ route('retur.index') }}" class="btn btn-secondary">Kembali</a>
+                <a href="{{ route('retur.edit', $retur) }}" class="btn btn-warning">Edit</a>
+            </div>
+
         </div>
     </div>
 </div>

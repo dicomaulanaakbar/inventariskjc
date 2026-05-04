@@ -61,6 +61,9 @@ try {
         'metode_pembayaran' => $request->metode_pembayaran,
         'user_id' => Auth::id(),
         'total_harga_jual' => $total,
+        'barang_id' => $request->barang_id,
+        'jumlah' => $request->jumlah,
+        
     ]);
 
     // DETAIL

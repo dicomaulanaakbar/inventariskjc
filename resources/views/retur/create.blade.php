@@ -15,8 +15,8 @@
 
                                 @foreach($penjualan as $pj)
                                     <option value="{{ $pj->id }}">
-                                        Transaksi #{{ $pj->id }} - 
-                                        {{ $pj->tgl_jual->format('d-m-Y') }} - 
+                                        Transaksi #{{ $pj->id }} -
+                                        {{ $pj->tgl_jual->format('d-m-Y') }}
                                         {{ $pj->details->count() }} item
                                     </option>
                                 @endforeach
@@ -31,7 +31,8 @@
 
                         <div class="mb-3">
                             <label>Alasan Retur</label>
-                            <select name="alasan" class="form-control" required>
+                            <select name="alasan_retur" class="form-control" required>
+                                 <option value="" disabled selected>Pilih Alasan</option>
                                 <option value="rusak">Rusak</option>
                                 <option value="salah_barang">Salah Barang</option>
                                 <option value="kadaluarsa">Kadaluarsa</option>

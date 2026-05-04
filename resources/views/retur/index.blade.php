@@ -25,7 +25,7 @@
                         <td>{{ $ret->id }}</td>
                         <td>{{ $ret->tgl_return->format('d/m/Y') }}</td>
                         <td>{{ $ret->barang_jual_id }}</td>
-                        <td>{{ ucfirst($ret->alasan) }}</td>
+                        <td>{{ ucfirst($ret->alasan_retur) }}</td>
                         <td>{{ $ret->details->sum('jumlah') }} pcs</td>
                         <td>
                             <a href="{{ route('retur.show', $ret) }}" class="btn btn-sm btn-info">Detail</a>
