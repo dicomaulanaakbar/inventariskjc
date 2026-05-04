@@ -112,33 +112,26 @@ try {
 
         $detail = $penjualan->details->first();
 
-         // 🔴 DATA LAMA
     $barangLama = Barang::find($detail->barang_id);
     $jumlahLama = $detail->jumlah;
 
-    // 🟢 DATA BARU
     $barangBaru = Barang::find($request->barang_id);
     $jumlahBaru = $request->jumlah;
 
-    // ✅ 1. KEMBALIKAN STOK LAMA
     $barangLama->stok += $jumlahLama;
     $barangLama->save();
 
-    // ✅ 2. CEK STOK BARU
     if ($barangBaru->stok < $jumlahBaru) {
         return back()->with('error', 'Stok tidak cukup!');
     }
 
-    // ✅ 3. KURANGI STOK BARU
     $barangBaru->stok -= $jumlahBaru;
     $barangBaru->save();
 
-    // ✅ 4. UPDATE PENJUALAN
     $penjualan->update([
         'tgl_jual' => $request->tgl_jual
     ]);
 
-    // ✅ 5. UPDATE DETAIL
     $detail->update([
         'barang_id' => $request->barang_id,
         'jumlah' => $jumlahBaru
@@ -160,22 +153,18 @@ try {
     {
        $penjualan = BarangJual::with('details')->findOrFail($id);
 
-    // ✅ Loop semua detail
     foreach ($penjualan->details as $detail) {
 
         $barang = Barang::find($detail->barang_id);
 
-        // ✅ KEMBALIKAN STOK
         if ($barang) {
             $barang->stok += $detail->jumlah;
             $barang->save();
         }
     }
 
-    // ✅ Hapus detail setelah stok dikembalikan
     BarangJualDetail::where('barang_jual_id', $id)->delete();
 
-    // ✅ Hapus penjualan
     $penjualan->delete();
 
     return redirect()->route('penjualan.index')

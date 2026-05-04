@@ -113,5 +113,28 @@ class BarangController extends Controller
         return view('barang.edit', compact('barang', 'kategoris', 'suppliers'));
     }
 
-    // ... method show, edit, update, destroy tetap sama ...
+    /**
+ * Update the specified resource in storage.
+ */
+public function update(Request $request, $id)
+{
+    $barang = Barang::findOrFail($id);
+
+    $request->validate([
+        'nama_barang' => 'required|string|max:100',
+        'kategori_id' => 'required|exists:kategoris,id',
+        // 'stok' => 'required|integer|min:0',
+        'satuan' => 'required|string|max:20',
+        'harga_beli' => 'required|integer|min:0',
+        'harga_jual' => 'required|integer|min:0',
+    ]);
+
+    $barang->update($request->only([
+        'nama_barang', 'kategori_id', 'satuan', 'harga_beli', 'harga_jual'
+    ]));
+
+    return redirect()->route('barang.index')
+        ->with('success', 'Barang berhasil diperbarui.');
+}
+
 }

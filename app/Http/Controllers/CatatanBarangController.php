@@ -21,27 +21,19 @@ class CatatanBarangController extends Controller
 
     public function index()
     {
-        // 1. Mengambil data transaksi utama
         $barangMasuk = BarangBeli::with('barang')->latest()->get();
 
-        // Alias $pembelian untuk memperbaiki error baris 99 (image_0459d7.png)
         $pembelian = $barangMasuk;
 
-        // Mengambil data penjualan (barang keluar)
         $barangKeluar = BarangJual::with('details.barang')->latest()->get();
 
-        // Alias $penjualan untuk memperbaiki error baris 70 (image_0459d7.png)
         $penjualan = $barangKeluar;
-
-        // 2. Menghitung Ringkasan Keuangan
+   
         $totalPendapatan = BarangJual::sum('total_harga_jual');
         $totalPengeluaran = BarangBeli::sum('total_bayar');
 
-        // Fix error image_045d02.png
         $labaKotor = $totalPendapatan - $totalPengeluaran;
 
-        // 3. Variabel pendukung navigasi/tabel
-        // Fix error image_04b46c.png & image_04615b.png
         $start = 1;
         $end = 10;
 

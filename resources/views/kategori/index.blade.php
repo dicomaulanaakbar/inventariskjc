@@ -21,9 +21,9 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th width="5%">No</th>
-                        <th>Nama Kategori</th>
-                        <th width="20%">Aksi</th>
+                        <th width="1%">No</th>
+                        <th width="4%">Nama Kategori</th>
+                        <th width="1%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

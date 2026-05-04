@@ -49,7 +49,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            {{-- <div class="col-md-6 mb-3">
                                 <label for="supplier_id" class="form-label">Supplier</label>
                                 <select name="supplier_id" id="supplier_id" class="form-control">
                                     <option value="">Pilih Supplier</option>
@@ -59,7 +59,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="row">
