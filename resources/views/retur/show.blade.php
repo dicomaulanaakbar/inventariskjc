@@ -39,9 +39,13 @@
                 <tr>
                     <th>Status</th>
                     <td>
-                        <span class="badge bg-{{ $retur->status_retur == 'selesai' ? 'success' : 'warning' }}">
+                        <span class="badge 
+                            @if($retur->status_retur == 'sukses') bg-success 
+                            @elseif($retur->status_retur == 'proses') bg-warning text-dark 
+                            @elseif($retur->status_retur == 'batal') bg-danger 
+                            @else bg-secondary @endif">
                             {{ ucfirst($retur->status_retur) }}
-                        </span>
+                    </span>
                     </td>
                 </tr>
 
@@ -80,7 +84,7 @@
             <!-- BUTTON -->
             <div class="mt-3">
                 <a href="{{ route('retur.index') }}" class="btn btn-secondary">Kembali</a>
-                <a href="{{ route('retur.edit', $retur) }}" class="btn btn-warning">Edit</a>
+                {{-- <a href="{{ route('retur.edit', $retur) }}" class="btn btn-warning">Edit</a> --}}
             </div>
 
         </div>

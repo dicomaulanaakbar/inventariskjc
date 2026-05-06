@@ -173,4 +173,10 @@ try {
     return redirect()->route('penjualan.index')
         ->with('success', 'Penjualan berhasil dihapus & stok kembali');
     }
+
+     public function show($id)
+    {
+        $penjualan = BarangJual::with('user', 'details.barang')->findOrFail($id);
+        return view('penjualan.show', compact('penjualan'));
+    }
 }

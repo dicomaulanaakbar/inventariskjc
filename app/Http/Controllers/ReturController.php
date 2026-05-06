@@ -110,16 +110,17 @@ class ReturController extends Controller
     public function update(Request $request, ReturBarang $retur)
     {
         $request->validate([
-            'alasan_retur' => 'required|string|max:50',
-            'keterangan' => 'nullable|string',
+            // 'alasan_retur' => 'required|string|max:50',
+            // 'keterangan' => 'nullable|string',
             'tgl_return' => 'required|date',
+            'status_retur' => 'required|in:sukses,proses,batal'
         ]);
 
         $retur->update([
-            'alasan_retur' => $request->alasan_retur,
-            'keterangan' => $request->keterangan,
+            // 'alasan_retur' => $request->alasan_retur,
+            // 'keterangan' => $request->keterangan,
             'tgl_return' => $request->tgl_return,
-
+            'status_retur' => $request->status_retur
         ]);
         return redirect()->route('retur.show', $retur)->with('success', 'Retur diperbarui.');
     }
@@ -133,7 +134,7 @@ class ReturController extends Controller
                 $barang = Barang::find($detail->barang_id);
                 $barang->decrement('stok', $detail->jumlah);
             }
-            $return->delete();
+            $return->delete();  
             DB::commit();
             return redirect()->route('retur.index')->with('success', 'Retur dihapus.');
         } catch (\Exception $e) {
@@ -147,4 +148,18 @@ class ReturController extends Controller
         $details = BarangJualDetail::with('barang')->where('barang_jual_id', $id)->get();
         return response()->json($details);
     }
+
+//     public function updateStatus(Request $request, $id)
+// {
+//     $request->validate([
+//         'status_status' => 'required|in:proses,berhasil,batal',
+//     ]);
+
+//     $retur = ReturBarang::findOrFail($id);
+//     $retur->status = $request->status;
+//     $retur->save();
+
+//     return redirect()->route('retur.show', $retur->id)
+//         ->with('success', 'Status retur berhasil diubah menjadi ' . ucfirst($request->status));
+// }
 }
