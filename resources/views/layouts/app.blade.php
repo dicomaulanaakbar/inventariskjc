@@ -62,7 +62,7 @@
                         </li>
                         @endif
 
-                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
+                        @if (auth()->user()->role == 'admin')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('retur.*') ? 'active' : '' }}" href="{{ route('retur.index') }}">
                                 <i class="fas fa-undo me-1"></i> Barang Retur
