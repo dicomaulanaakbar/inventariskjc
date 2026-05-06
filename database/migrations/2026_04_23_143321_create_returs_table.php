@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->datetime('tgl_return');
             $table->string('alasan_retur', 100);
-            $table->enum('status_retur', ['sukses', 'proses'])->default('belum ada');
+            $table->enum('status_retur', ['sukses', 'proses', 'batal'])->default('belum ada');
 
             $table->foreignId('barang_jual_id')->constrained('barang_juals')->onDelete('cascade');
             $table->text('keterangan')->nullable();

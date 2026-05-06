@@ -61,6 +61,9 @@ try {
         'metode_pembayaran' => $request->metode_pembayaran,
         'user_id' => Auth::id(),
         'total_harga_jual' => $total,
+        'barang_id' => $request->barang_id,
+        'jumlah' => $request->jumlah,
+        
     ]);
 
     // DETAIL
@@ -169,5 +172,11 @@ try {
 
     return redirect()->route('penjualan.index')
         ->with('success', 'Penjualan berhasil dihapus & stok kembali');
+    }
+
+     public function show($id)
+    {
+        $penjualan = BarangJual::with('user', 'details.barang')->findOrFail($id);
+        return view('penjualan.show', compact('penjualan'));
     }
 }

@@ -42,7 +42,7 @@ class ReturController extends Controller
         $request->validate([
             'barang_jual_id' => 'required|exists:barang_juals,id',
             'tanggal' => 'required|date',
-            'alasan' => 'required|string|max:50',
+            'alasan_retur' => 'required|string|max:50',
             'keterangan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.barang_id' => 'required|exists:barangs,id',
@@ -57,7 +57,7 @@ class ReturController extends Controller
             // Buat retur header
             $return = ReturBarang::create([
                 'tgl_return' => $request->tanggal,
-                'alasan_retur' => $request->alasan,
+                'alasan_retur' => $request->alasan_retur,
                 'barang_jual_id' => $penjualan->id,
                 'keterangan' => $request->keterangan,
                 'status_retur' => 'proses',
@@ -83,7 +83,7 @@ class ReturController extends Controller
                 $barang = Barang::find($item['barang_id']);
                 // $barang->increment('stok', $item['jumlah']);
 
-                
+
             }
 
             DB::commit();
@@ -95,30 +95,34 @@ class ReturController extends Controller
         }
     }
 
-    public function show(ReturBarang $return)
+    public function show(ReturBarang $retur)
+{
+    $retur->load('barangJual', 'details.barang');
+    return view('retur.show', compact('retur'));
+}
+
+    public function edit(ReturBarang $retur)
     {
-        $return->load('barangJual', 'details.barang');
-        return view('retur.show', compact('return'));
+
+        return view('retur.edit', compact('retur'));
     }
 
-    public function edit(ReturBarang $return)
-    {
-
-        return view('retur.edit', compact('return'));
-    }
-
-    public function update(Request $request, ReturBarang $return)
+    public function update(Request $request, ReturBarang $retur)
     {
         $request->validate([
-            'alasan' => 'required|string',
-            'keterangan' => 'nullable|string',
+            // 'alasan_retur' => 'required|string|max:50',
+            // 'keterangan' => 'nullable|string',
+            'tgl_return' => 'required|date',
+            'status_retur' => 'required|in:sukses,proses,batal'
         ]);
 
-        $return->update([
-            'alasan_retur' => $request->alasan,
-            'keterangan' => $request->keterangan,
+        $retur->update([
+            // 'alasan_retur' => $request->alasan_retur,
+            // 'keterangan' => $request->keterangan,
+            'tgl_return' => $request->tgl_return,
+            'status_retur' => $request->status_retur
         ]);
-        return redirect()->route('retur.show', $return)->with('success', 'Retur diperbarui.');
+        return redirect()->route('retur.show', $retur)->with('success', 'Retur diperbarui.');
     }
 
     public function destroy(ReturBarang $return)
@@ -130,7 +134,7 @@ class ReturController extends Controller
                 $barang = Barang::find($detail->barang_id);
                 $barang->decrement('stok', $detail->jumlah);
             }
-            $return->delete();
+            $return->delete();  
             DB::commit();
             return redirect()->route('retur.index')->with('success', 'Retur dihapus.');
         } catch (\Exception $e) {
@@ -144,4 +148,18 @@ class ReturController extends Controller
         $details = BarangJualDetail::with('barang')->where('barang_jual_id', $id)->get();
         return response()->json($details);
     }
+
+//     public function updateStatus(Request $request, $id)
+// {
+//     $request->validate([
+//         'status_status' => 'required|in:proses,berhasil,batal',
+//     ]);
+
+//     $retur = ReturBarang::findOrFail($id);
+//     $retur->status = $request->status;
+//     $retur->save();
+
+//     return redirect()->route('retur.show', $retur->id)
+//         ->with('success', 'Status retur berhasil diubah menjadi ' . ucfirst($request->status));
+// }
 }

@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     // retur
     Route::get('/retur/get-details/{id}', [ReturController::class, 'getPenjualanDetails']);
     Route::resource('retur', ReturController::class)->middleware(['auth', 'role:admin']);
+    Route::patch('/retur/{id}/status', [ReturController::class, 'updateStatus'])->name('retur.updateStatus');
 
     //supplier
     Route::resource('supplier', SupplierController::class);

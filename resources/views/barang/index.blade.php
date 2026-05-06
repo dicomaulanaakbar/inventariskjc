@@ -60,7 +60,7 @@
                         <th>Nama Barang</th>
                         <th>Kategori</th>
                         {{-- <th>Supplier</th> --}}
-                        <th>Stok</th>
+                        <th>Jumlah Barang</th>
                         <th>Satuan</th>
                         <th>Harga Jual</th>
                         <th width="20%">Aksi</th>

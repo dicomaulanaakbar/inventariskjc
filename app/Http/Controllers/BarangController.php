@@ -42,12 +42,8 @@ class BarangController extends Controller
         return view('barang.create', compact('kategoris', 'suppliers'));
     }
 
-    /**
-     * Simpan barang baru + Sinkronisasi Riwayat Pembelian
-     */
     public function store(Request $request)
     {
-        // 1. Validasi dengan tipe numeric agar perhitungan matematika akurat
         $request->validate([
             'nama_barang' => 'required|string|max:100',
             'spesifikasi' => 'nullable|string',
@@ -61,7 +57,6 @@ class BarangController extends Controller
         DB::beginTransaction();
 
         try {
-            // 2. Simpan data ke tabel barangs menggunakan data yang sudah divalidasi
             $barang = Barang::create([
                 'nama_barang' => $request->nama_barang,
                 'spesifikasi' => $request->spesifikasi,
@@ -72,15 +67,12 @@ class BarangController extends Controller
                 'harga_jual'  => $request->harga_jual,
             ]);
 
-            // 3. Catat riwayat stok awal ke tabel barang_belis
             if ($request->stok > 0) {
-                // SINKRONISASI: Kita ambil harga langsung dari $barang yang baru disimpan
-                // untuk menjamin data di tabel master dan riwayat identik.
                 BarangBeli::create([
                     'barang_id'         => $barang->id,
                     'tgl_pembelian'     => now(),
                     'jumlah_barang'     => $barang->stok,
-                    'total_bayar'       => ($barang->stok * $barang->harga_beli), // Perhitungan biaya total
+                    'total_bayar'       => ($barang->stok * $barang->harga_beli),
                     'status_pembayaran' => 'lunas',
                     'user_id'           => Auth::id(),
                     'keterangan'        => 'Stok awal barang baru'
@@ -108,9 +100,9 @@ class BarangController extends Controller
     {
         $barang = Barang::findOrFail($id);
         $kategoris = Kategori::all();
-        $suppliers = Supplier::all(); // jika masih menggunakan supplier
+        // $suppliers = Supplier::all();
 
-        return view('barang.edit', compact('barang', 'kategoris', 'suppliers'));
+        return view('barang.edit', compact('barang', 'kategoris',));
     }
 
     /**

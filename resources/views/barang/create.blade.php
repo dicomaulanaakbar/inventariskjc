@@ -73,7 +73,7 @@
                         </div> --}}
 
                         <div class="mb-3">
-                            <label for="stok" class="form-label">Stok Awal</label>
+                            <label for="stok" class="form-label">Jumlah Barang</label>
                             <input type="number" name="stok" id="stok"
                                    class="form-control @error('stok') is-invalid @enderror"
                                    value="{{ old('stok', 0) }}" required>
