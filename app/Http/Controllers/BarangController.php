@@ -129,4 +129,14 @@ public function update(Request $request, $id)
         ->with('success', 'Barang berhasil diperbarui.');
 }
 
+public function destroy($id)
+{
+    $barang = Barang::findOrFail($id);
+
+    $barang->delete();
+
+    return redirect()->route('barang.index')
+        ->with('success', 'Barang berhasil dihapus');
+}
+
 }
