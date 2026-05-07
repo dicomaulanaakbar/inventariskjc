@@ -25,17 +25,17 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="mb-3">
                             <label for="spesifikasi" class="form-label">Spesifikasi</label>
                             <input type="text" name="spesifikasi" id="spesifikasi" 
                                    class="form-control @error('nama_barang') is-invalid @enderror" 
-                                   value="{{ old('spesifikasi') }}" required>
+                                   value="{{ old('spesifikasi') }}">
                             @error('spesifikasi')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                     </div>
+                     </div> -->
 
                         
                         <div class="row">
