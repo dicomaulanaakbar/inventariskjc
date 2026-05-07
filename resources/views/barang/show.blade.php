@@ -11,6 +11,10 @@
                         <tr><th>ID</th><td>{{ $barang->id }}</td></tr>
                         <tr><th>Nama</th><td>{{ $barang->nama_barang }}</td></tr>
                         <tr><th>Kategori</th><td>{{ $barang->kategori->nama_kategori ?? '-' }}</td></tr>
+                         <tr>
+                            <th>Spesifikasi</th>
+                            <td>{{ $barang->spesifikasi ?? '-' }}</td>
+                        </tr>
                         {{-- <tr><th>Supplier</th><td>{{ $barang->supplier->nama_supplier ?? '-' }}</td></tr> --}}
                         {{-- <tr><th>Stok</th><td>{{ $barang->stok }} {{ $barang->satuan }}</td></tr>
                         <tr><th>Harga Beli</th><td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td></tr>

@@ -67,17 +67,17 @@ class BarangController extends Controller
                 'harga_jual'  => $request->harga_jual,
             ]);
 
-            if ($request->stok > 0) {
-                BarangBeli::create([
-                    'barang_id'         => $barang->id,
-                    'tgl_pembelian'     => now(),
-                    'jumlah_barang'     => $barang->stok,
-                    'total_bayar'       => ($barang->stok * $barang->harga_beli),
-                    'status_pembayaran' => 'lunas',
-                    'user_id'           => Auth::id(),
-                    'keterangan'        => 'Stok awal barang baru'
-                ]);
-            }
+            // if ($request->stok > 0) {
+            //     BarangBeli::create([
+            //         'barang_id'         => $barang->id,
+            //         'tgl_pembelian'     => now(),
+            //         'jumlah_barang'     => $barang->stok,
+            //         'total_bayar'       => ($barang->stok * $barang->harga_beli),
+            //         'status_pembayaran' => 'lunas',
+            //         'user_id'           => Auth::id(),
+            //         'keterangan'        => 'Stok awal barang baru'
+            //     ]);
+            // }
 
             DB::commit();
 
@@ -92,8 +92,9 @@ class BarangController extends Controller
 
     public function show($id)
     {
-        $barang = Barang::findOrFail($id);
-        return view('barang.show', compact('barang'));
+    //    dd("Menerima ID: " . $id);
+    $barang = Barang::findOrFail($id);
+    return view('barang.show', compact('barang'));
     }
 
     public function edit($id)
@@ -129,12 +130,31 @@ public function update(Request $request, $id)
         ->with('success', 'Barang berhasil diperbarui.');
 }
 
-public function destroy(Barang $barang)
-{
-    $barang->delete();
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $barang = Barang::findOrFail($id);
 
-    return redirect()->route('barang.index')
-        ->with('success', 'Barang berhasil dihapus');
-}
+
+        if ($barang->barangBeli()->count() > 0) {
+            return redirect()->route('barang.index')
+                ->with('error', 'Barang "' . $barang->nama_barang . '" tidak dapat dihapus karena sudah memiliki riwayat pembelian.');
+        }
+
+        if ($barang->barangJualDetails()->count() > 0) {
+            return redirect()->route('barang.index')
+                ->with('error', 'Barang "' . $barang->nama_barang . '" tidak dapat dihapus karena sudah memiliki riwayat penjualan.');
+        }
+
+        $barang->delete();
+
+        return redirect()->route('barang.index')
+            ->with('success', 'Barang "' . $barang->nama_barang . '" berhasil dihapus.');
+    }
 
 }

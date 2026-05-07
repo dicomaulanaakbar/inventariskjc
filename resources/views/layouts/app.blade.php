@@ -57,7 +57,7 @@
                         @if(auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                         <li class="nav-item">
                              <a class="nav-link {{ request()->routeIs('catatan.*') ? 'active' : '' }}" href="{{ route('catatan.index') }}">
-                            <i class="fas fa-solid fa-print"></i> Catatan Barang
+                            <i class="fa-solid fa-clock-rotate-left"></i> Histori Barang
                          </a>
                         </li>
                         @endif
@@ -73,7 +73,7 @@
                         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('penjualan.*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">
-                                <i class="fas fa-shopping-cart me-1"></i> Penjualan
+                                <i class="fas fa-shopping-cart me-1"></i> Transaksi
                             </a>
                         </li>  
 
