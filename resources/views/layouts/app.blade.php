@@ -170,6 +170,13 @@
         </div>
     </main>
 
+    <footer class="mt-auto py-3 bg-light text-center">
+    <div class="container">
+        <img src="{{ asset('images/poliwangi.png') }}" alt="Logo" height="30" class="me-2">
+        <span class="text-muted">&copy; {{ date('Y') }} Karim Jaya Computer. All rights reserved.</span>
+    </div>
+</footer>
+
     <!-- Bootstrap JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
