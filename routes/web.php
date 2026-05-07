@@ -2,87 +2,144 @@
 
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CatatanBarangController;
-use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\ReturController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReturController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| WEB ROUTES
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('dashboard');
+Route::middleware(['auth'])->group(function () {
 
-Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
 
-    // Tambahan route untuk update foto dan data tambahan
-    Route::patch('/profile/update-profile', [ProfileController::class, 'updateProfile'])->name('profile.update.profile');
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
 
-    // Route untuk update password
-    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
 
-    // Route untuk hapus akun
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/update-profile', [ProfileController::class, 'updateProfile'])
+        ->name('profile.update.profile');
 
-    //kategori
-    Route::resource('kategori', KategoriController::class);
+    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])
+        ->name('profile.update.password');
 
-    // CRUD Barang (admin)
-    Route::resource('barang', BarangController::class);
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 
-    // penjualan
-    Route::resource('penjualan', PenjualanController::class)->middleware(['auth', 'role:admin']);
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN ONLY
+    |--------------------------------------------------------------------------
+    */
 
-    // retur
-    Route::get('/retur/get-details/{id}', [ReturController::class, 'getPenjualanDetails']);
-    Route::resource('retur', ReturController::class)->middleware(['auth', 'role:admin']);
-    Route::patch('/retur/{id}/status', [ReturController::class, 'updateStatus'])->name('retur.updateStatus');
+    Route::middleware(['role:admin'])->group(function () {
 
-    //supplier
-    Route::resource('supplier', SupplierController::class);
+        // Kategori
+        Route::resource('kategori', KategoriController::class);
 
+        // Supplier
+        Route::resource('supplier', SupplierController::class);
 
-    Route::resource('catatan', CatatanBarangController::class);
-    Route::get('/catatan/stok-masuk/{barang?}', [CatatanBarangController::class, 'formStokMasuk'])->name('stok.masuk.form');
-    Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])->name('stok.masuk');
-    Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])->name('stok.keluar.form');
-    Route::post('/catatan/stok-keluar', [CatatanBarangController::class, 'stokKeluar'])->name('stok.keluar');
+        // Barang
+        Route::resource('barang', BarangController::class);
 
-   // Laporan
-    Route::get('/laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
-    Route::get('/laporan/keuangan', [LaporanController::class, 'keuangan'])->name('laporan.keuangan');
-    Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])->name('laporan.barang-masuk');
-    Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])->name('laporan.barang-keluar');
+        // Penjualan
+        Route::resource('penjualan', PenjualanController::class);
 
-    Route::get('/admin/supplier', function (){
-        //
-    })->middleware('role:admin');
+        // Retur
+        Route::get('/retur/get-details/{id}', [ReturController::class, 'getPenjualanDetails'])
+            ->name('retur.get-details');
 
+        Route::patch('/retur/{id}/status', [ReturController::class, 'updateStatus'])
+            ->name('retur.updateStatus');
 
-    // Route::Middleware(['auth', 'role:admin']-> group(function (){
-    //     Route::get('/admin/dashboard', )
-    // }))
+        Route::resource('retur', ReturController::class);
 
-    Route::get('/owner/laporan/keuangan', function (){
-        //
-    })->middleware('role:owner');
+        // Catatan Barang
+        Route::resource('catatan', CatatanBarangController::class);
+
+        Route::get('/catatan/stok-masuk/{barang?}', [CatatanBarangController::class, 'formStokMasuk'])
+            ->name('stok.masuk.form');
+
+        Route::post('/catatan/stok-masuk/{barang}', [CatatanBarangController::class, 'stokMasuk'])
+            ->name('stok.masuk');
+
+        Route::get('/catatan/stok-keluar/{barang?}', [CatatanBarangController::class, 'formStokKeluar'])
+            ->name('stok.keluar.form');
+
+        Route::post('/catatan/stok-keluar', [CatatanBarangController::class, 'stokKeluar'])
+            ->name('stok.keluar');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | OWNER ONLY
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['role:owner'])->group(function () {
+
+        // Laporan
+        Route::get('/laporan/stok', [LaporanController::class, 'stok'])
+            ->name('laporan.stok');
+
+        Route::get('/laporan/keuangan', [LaporanController::class, 'keuangan'])
+            ->name('laporan.keuangan');
+
+        Route::get('/laporan/barang-masuk', [LaporanController::class, 'barangMasuk'])
+            ->name('laporan.barang-masuk');
+
+        Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])
+            ->name('laporan.barang-keluar');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN + OWNER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['role:admin,owner'])->group(function () {
+
+        // Bisa lihat penjualan
+        Route::get('/penjualan', [PenjualanController::class, 'index'])
+            ->name('penjualan.index');
+
+        Route::get('/penjualan/{penjualan}', [PenjualanController::class, 'show'])
+            ->name('penjualan.show');
+
+        // Bisa lihat catatan
+        Route::get('/catatan', [CatatanBarangController::class, 'index'])
+            ->name('catatan.index');
+    });
 
 });
 
-    //kategori
-    Route::resource('kategori', KategoriController::class);
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
