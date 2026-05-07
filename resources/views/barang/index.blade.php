@@ -69,7 +69,7 @@
                 <tbody>
                     @forelse($barangs as $barang)
                     <tr>
-                        <td>{{ $barang->id }}</td>
+                        <td>{{ $barangs->firstItem() + $loop->index }}</td>
                         <td>{{ $barang->nama_barang }}</td>
                         <td>{{ $barang->kategori->nama_kategori ?? '-' }}</td>
                         {{-- <td>{{ $barang->supplier->nama_supplier ?? '-' }}</td> --}}
