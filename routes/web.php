@@ -118,6 +118,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])
             ->name('laporan.barang-keluar');
+
+                  
+        Route::get('/laporan/keuangan/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.keuangan.pdf');
+
+        Route::get('/laporan/keuangan/excel', [LaporanController::class, 'exportExcel'])->name('laporan.keuangan.excel');
     });
 
     /*

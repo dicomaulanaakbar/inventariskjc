@@ -9,6 +9,9 @@ use App\Models\BarangJualDetail;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Exports\LaporanKeuanganExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -68,5 +71,31 @@ class LaporanController extends Controller
         })->sum('jumlah');
 
         return view('laporan.barang-keluar', compact('start', 'end', 'detailPenjualan', 'totalTerjual'));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $start = $request->input('start', now()->startOfMonth()->format('Y-m-d'));
+        $end   = $request->input('end', now()->endOfMonth()->format('Y-m-d'));
+
+        $penjualan = BarangJual::with('user')
+            ->whereBetween('tgl_jual', [$start, $end])
+            ->orderBy('tgl_jual', 'desc')
+            ->get();
+
+        $totalPendapatan = $penjualan->sum('total_harga_jual');
+        $totalPengeluaran = BarangBeli::whereBetween('tgl_pembelian', [$start, $end])->sum('total_bayar');
+        $laba = $totalPendapatan - $totalPengeluaran;
+
+        $pdf = Pdf::loadView('laporan.keuangan-pdf', compact('penjualan', 'start', 'end', 'totalPendapatan', 'totalPengeluaran', 'laba'));
+        return $pdf->download('laporan-keuangan-' . $start . '-sampai-' . $end . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $start = $request->input('start', now()->startOfMonth()->format('Y-m-d'));
+        $end   = $request->input('end', now()->endOfMonth()->format('Y-m-d'));
+
+        return Excel::download(new LaporanKeuanganExport($start, $end), 'laporan-keuangan-' . $start . '-sampai-' . $end . '.xlsx');
     }
 }
