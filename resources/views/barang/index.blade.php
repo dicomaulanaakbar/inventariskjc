@@ -59,6 +59,7 @@
                         <th>ID</th>
                         <th>Nama Barang</th>
                         <th>Kategori</th>
+                        <th>Gambar</th>
                         {{-- <th>Supplier</th> --}}
                         <th>Jumlah Barang</th>
                         <th>Satuan</th>
@@ -72,6 +73,13 @@
                         <td>{{ $barangs->firstItem() + $loop->index }}</td>
                         <td>{{ $barang->nama_barang }}</td>
                         <td>{{ $barang->kategori->nama_kategori ?? '-' }}</td>
+                        <td>
+                        @if($barang->gambar)
+                            <img src="{{ asset('storage/' . $barang->gambar) }}" width="50" height="50" class="img-thumbnail">
+                        @else
+                            <span class="text-muted">Tidak ada</span>
+                        @endif
+                        </td>
                         {{-- <td>{{ $barang->supplier->nama_supplier ?? '-' }}</td> --}}
                         <td>
                             @if($barang->stok <= 5)

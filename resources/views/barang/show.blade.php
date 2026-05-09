@@ -15,6 +15,13 @@
                             <th>Spesifikasi</th>
                             <td>{{ $barang->spesifikasi ?? '-' }}</td>
                         </tr>
+                        <td>
+                            @if($barang->gambar)
+                                <img src="{{ asset('storage/' . $barang->gambar) }}" width="50" height="50" class="img-thumbnail">
+                            @else
+                                <span class="text-muted">Tidak ada</span>
+                            @endif
+                        </td>
                         {{-- <tr><th>Supplier</th><td>{{ $barang->supplier->nama_supplier ?? '-' }}</td></tr> --}}
                         {{-- <tr><th>Stok</th><td>{{ $barang->stok }} {{ $barang->satuan }}</td></tr>
                         <tr><th>Harga Beli</th><td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td></tr>
