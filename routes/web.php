@@ -9,6 +9,7 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    // Route::get('/upload', [UploadController::class, 'index'])->name('upload.index');
+    // Route::post('/upload', [UploadController::class, 'upload'])->name('upload.store');
 
     /*
     |--------------------------------------------------------------------------
@@ -118,6 +122,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/laporan/barang-keluar', [LaporanController::class, 'barangKeluar'])
             ->name('laporan.barang-keluar');
+
+                  
+        Route::get('/laporan/keuangan/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.keuangan.pdf');
+
+        Route::get('/laporan/keuangan/excel', [LaporanController::class, 'exportExcel'])->name('laporan.keuangan.excel');
     });
 
     /*

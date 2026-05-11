@@ -3,17 +3,16 @@
 @section('content')
 <div class="container">
     <div class="card">
-        <div class="card-header">Tambah Penjualan</div>
+        <div class="card-header bg-primary text-white">Tambah Penjualan</div>
         <div class="card-body">
 
             <form action="{{ route('penjualan.store') }}" method="POST">
                 @csrf
 
-                <!-- Pilih Barang -->
                 <div class="mb-3">
-                    <label class="form-label">Pilih Barang</label>
+                    <label class="form-label font-weight-bold">Pilih Barang</label>
                     <select name="barang_id" id="barang_id" class="form-control" required>
-                        <option value="">Pilih Barang</option>
+                        <option value="">-- Ketik Nama Barang --</option>
                         @foreach($barangs as $barang)
                             <option value="{{ $barang->id }}"
                                 data-harga="{{ $barang->harga }}"
@@ -24,34 +23,31 @@
                     </select>
                 </div>
 
-                <!-- Tanggal -->
                 <div class="mb-3">
                     <label class="form-label">Tanggal Penjualan</label>
                     <input type="date" name="tgl_jual" class="form-control"
                            value="{{ date('Y-m-d') }}" required>
                 </div>
 
-                <!-- Harga (auto) -->
-                <div class="mb-3">
-                    <label class="form-label">Harga</label>
-                    <input type="text" id="harga" class="form-control" readonly>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Harga Satuan</label>
+                        <input type="text" id="harga" class="form-control" readonly placeholder="Rp 0">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Jumlah Beli</label>
+                        <input type="number" name="jumlah" id="jumlah"
+                               class="form-control" min="1" required placeholder="0">
+                        <small class="text-danger" id="stok-info"></small>
+                    </div>
                 </div>
 
-                <!-- Jumlah -->
                 <div class="mb-3">
-                    <label class="form-label">Jumlah</label>
-                    <input type="number" name="jumlah" id="jumlah"
-                           class="form-control" min="1" required>
-                    <small class="text-muted" id="stok-info"></small>
+                    <label class="form-label font-weight-bold">Total Pembayaran</label>
+                    <input type="text" id="total" class="form-control form-control-lg" readonly style="background-color: #e9ecef; font-weight: bold;" placeholder="Rp 0">
                 </div>
 
-                <!-- Total (auto) -->
-                <div class="mb-3">
-                    <label class="form-label">Total</label>
-                    <input type="text" id="total" class="form-control" readonly>
-                </div>
-
-                <!-- Metode -->
                 <div class="mb-3">
                     <label class="form-label">Metode Pembayaran</label>
                     <select name="metode_pembayaran" class="form-control" required>
@@ -62,49 +58,81 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('penjualan.index') }}" class="btn btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-success">Simpan Transaksi</button>
+                </div>
             </form>
 
         </div>
     </div>
 </div>
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
-    let hargaInput = document.getElementById('harga');
-    let jumlahInput = document.getElementById('jumlah');
-    let totalInput = document.getElementById('total');
-    let stokInfo = document.getElementById('stok-info');
+    $(document).ready(function() {
+        // 1. Inisialisasi Autocomplete pada dropdown barang
+        $('#barang_id').select2({
+            placeholder: "Cari nama barang...",
+            allowClear: true,
+            width: '100%'
+        });
 
-    document.getElementById('barang_id').addEventListener('change', function() {
-        let selected = this.options[this.selectedIndex];
+        let hargaInput = document.getElementById('harga');
+        let jumlahInput = document.getElementById('jumlah');
+        let totalInput = document.getElementById('total');
+        let stokInfo = document.getElementById('stok-info');
 
-        let harga = selected.getAttribute('data-harga');
-        let stok = selected.getAttribute('data-stok');
+        // 2. Fungsi saat barang dipilih
+        $('#barang_id').on('change', function() {
+            let selected = $(this).find(':selected');
+            
+            let harga = selected.data('harga');
+            let stok = selected.data('stok');
 
-        hargaInput.value = harga ? 'Rp ' + parseInt(harga).toLocaleString() : '';
-        stokInfo.innerText = stok ? 'Stok tersedia: ' + stok : '';
-
-        jumlahInput.max = stok;
-
-        hitungTotal();
-    });
-
-    jumlahInput.addEventListener('input', hitungTotal);
-
-    function hitungTotal() {
-        let selected = document.getElementById('barang_id').options[document.getElementById('barang_id').selectedIndex];
-
-        let harga = selected.getAttribute('data-harga');
-        let jumlah = jumlahInput.value;
-
-        if (harga && jumlah) {
-            let total = harga * jumlah;
-            totalInput.value = 'Rp ' + total.toLocaleString();
-        } else {
+            // Update UI Harga dan info stok
+            if (harga) {
+                hargaInput.value = 'Rp ' + parseInt(harga).toLocaleString('id-ID');
+                stokInfo.innerText = 'Stok tersedia: ' + stok;
+                jumlahInput.max = stok; // Batasi input maksimal sesuai stok
+            } else {
+                hargaInput.value = '';
+                stokInfo.innerText = '';
+            }
+            
+            // Reset jumlah jika barang diganti
+            jumlahInput.value = '';
             totalInput.value = '';
-        }
-    }
+        });
+
+        // 3. Fungsi hitung total saat jumlah diketik
+        jumlahInput.addEventListener('input', function() {
+            let selected = $('#barang_id').find(':selected');
+            let harga = selected.data('harga');
+            let stok = selected.data('stok');
+            let jumlah = parseInt(this.value);
+
+            // Validasi jangan melebihi stok
+            if (jumlah > stok) {
+                alert('Jumlah melebihi stok yang tersedia!');
+                this.value = stok;
+                jumlah = stok;
+            }
+
+            if (harga && jumlah) {
+                let total = harga * jumlah;
+                totalInput.value = 'Rp ' + total.toLocaleString('id-ID');
+            } else {
+                totalInput.value = '';
+            }
+        });
+    });
 </script>
 @endpush
 @endsection

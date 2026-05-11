@@ -8,7 +8,7 @@
                 <div class="card-header bg-white font-weight-bold d-flex justify-content-between align-items-center">
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2>Daftar Penjualan</h2>
+                        <h2>TRANSAKSI PENJUALAN</h2>
                         </div>
                     <a href="{{ route('penjualan.create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus me-1"></i> Tambah Penjualan
@@ -36,7 +36,7 @@
                         <tbody>
                             @foreach($penjualans as $penjualan)
                                     <tr>
-                                    <td>{{ $penjualan->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $penjualan->details->first()?->barang?->nama_barang ?? 'N/A' }}</td>
                                     <td>{{ $penjualan->tgl_jual->format('d-m-Y') }}</td>
                                     <td>{{ $penjualan->details->first()?->jumlah ?? 0 }}</td>

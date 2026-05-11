@@ -18,6 +18,17 @@
             <button type="submit" class="btn btn-primary">Filter</button>
             <a href="{{ route('laporan.keuangan') }}" class="btn btn-secondary">Reset</a>
         </div>
+
+        <div class="row mb-3 mt-3">
+            <div class="col-md-12">
+            <a href="{{ route('laporan.keuangan.pdf', request()->query()) }}" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Download PDF
+            </a>
+            <a href="{{ route('laporan.keuangan.excel', request()->query()) }}" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Download Excel
+            </a>
+        </div>
+    </div>
     </form>
 
     <!-- Total Pendapatan -->

@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
         // Data untuk tabel (10 barang dengan stok terendah)
         $barangs = Barang::with('kategori')
-            ->orderBy('stok', 'asc')
+            ->orderBy('desc')
             ->take(10)
             ->get();
 

@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Supplier;
 use App\Models\BarangBeli;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -51,38 +52,40 @@ class BarangController extends Controller
             'stok'        => 'required|integer|min:0',
             'satuan'      => 'required|string',
             'harga_beli'  => 'required|numeric|min:0',
-            'harga_jual'  => 'required|numeric|min:0'
+            'harga_jual'  => 'required|numeric|min:0',
+            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        DB::beginTransaction();
 
+        DB::beginTransaction();
         try {
-            $barang = Barang::create([
-                'nama_barang' => $request->nama_barang,
-                'spesifikasi' => $request->spesifikasi,
-                'kategori_id' => $request->kategori_id,
-                'stok'        => $request->stok,
-                'satuan'      => $request->satuan,
-                'harga_beli'  => $request->harga_beli,
-                'harga_jual'  => $request->harga_jual,
+            $data = $request->only([
+                'nama_barang', 'spesifikasi', 'kategori_id', 
+                'stok', 'satuan', 'harga_beli', 'harga_jual'
             ]);
 
-            if ($request->stok > 0) {
-                BarangBeli::create([
-                    'barang_id'         => $barang->id,
-                    'tgl_pembelian'     => now(),
-                    'jumlah_barang'     => $barang->stok,
-                    'total_bayar'       => ($barang->stok * $barang->harga_beli),
-                    'status_pembayaran' => 'lunas',
-                    'user_id'           => Auth::id(),
-                    'keterangan'        => 'Stok awal barang baru'
-                ]);
+            // if ($request->stok > 0) {
+            //     BarangBeli::create([
+            //         'barang_id'         => $barang->id,
+            //         'tgl_pembelian'     => now(),
+            //         'jumlah_barang'     => $barang->stok,
+            //         'total_bayar'       => ($barang->stok * $barang->harga_beli),
+            //         'status_pembayaran' => 'lunas',
+            //         'user_id'           => Auth::id(),
+            //         'keterangan'        => 'Stok awal barang baru'
+            //     ]);
+            // }
+
+             if ($request->hasFile('gambar')) {
+                $path = $request->file('gambar')->store('barang', 'public');
+                $data['gambar'] = $path;
             }
 
-            DB::commit();
+            $barang = Barang::create($data);
 
+            DB::commit();
             return redirect()->route('barang.index')
-                ->with('success', 'Barang dan riwayat stok awal berhasil disinkronkan.');
+                ->with('success', 'Barang berhasil ditambahkan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -92,8 +95,9 @@ class BarangController extends Controller
 
     public function show($id)
     {
-        $barang = Barang::findOrFail($id);
-        return view('barang.show', compact('barang'));
+    //    dd("Menerima ID: " . $id);
+    $barang = Barang::findOrFail($id);
+    return view('barang.show', compact('barang'));
     }
 
     public function edit($id)
@@ -115,26 +119,58 @@ public function update(Request $request, $id)
     $request->validate([
         'nama_barang' => 'required|string|max:100',
         'kategori_id' => 'required|exists:kategoris,id',
+        'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         // 'stok' => 'required|integer|min:0',
         'satuan' => 'required|string|max:20',
         'harga_beli' => 'required|integer|min:0',
         'harga_jual' => 'required|integer|min:0',
     ]);
+$data = $request->except(['gambar']);
 
-    $barang->update($request->only([
-        'nama_barang', 'kategori_id', 'satuan', 'harga_beli', 'harga_jual'
-    ]));
+    if ($request->hasFile('gambar')) {
+        if ($barang->gambar && Storage::disk('public')->exists($barang->gambar)) {
+            Storage::disk('public')->delete($barang->gambar);
+        }
+        $path = $request->file('gambar')->store('barang', 'public');
+        $data['gambar'] = $path;
+    }
+
+    $barang->update($data);
 
     return redirect()->route('barang.index')
         ->with('success', 'Barang berhasil diperbarui.');
 }
 
-public function destroy(Barang $barang)
-{
-    $barang->delete();
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $barang = Barang::findOrFail($id);
 
-    return redirect()->route('barang.index')
-        ->with('success', 'Barang berhasil dihapus');
-}
+
+        if ($barang->barangBeli()->count() > 0) {
+            return redirect()->route('barang.index')
+                ->with('error', 'Barang "' . $barang->nama_barang . '" tidak dapat dihapus karena sudah memiliki riwayat pembelian.');
+        }
+
+        if ($barang->barangJualDetails()->count() > 0) {
+            return redirect()->route('barang.index')
+                ->with('error', 'Barang "' . $barang->nama_barang . '" tidak dapat dihapus karena sudah memiliki riwayat penjualan.');
+        }
+
+        $barang = Barang::findOrFail($id);
+    if ($barang->gambar && Storage::disk('public')->exists($barang->gambar)) {
+        Storage::disk('public')->delete($barang->gambar);
+    }
+
+        $barang->delete();
+
+        return redirect()->route('barang.index')
+            ->with('success', 'Barang "' . $barang->nama_barang . '" berhasil dihapus.');
+    }
 
 }

@@ -57,7 +57,7 @@
                         @if(auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                         <li class="nav-item">
                              <a class="nav-link {{ request()->routeIs('catatan.*') ? 'active' : '' }}" href="{{ route('catatan.index') }}">
-                            <i class="fas fa-solid fa-print"></i> Catatan Barang
+                            <i class="fa-solid fa-clock-rotate-left"></i> Histori Barang
                          </a>
                         </li>
                         @endif
@@ -73,7 +73,7 @@
                         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('penjualan.*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">
-                                <i class="fas fa-shopping-cart me-1"></i> Penjualan
+                                <i class="fas fa-shopping-cart me-1"></i> Transaksi
                             </a>
                         </li>  
 
@@ -169,6 +169,13 @@
             @yield('content')
         </div>
     </main>
+
+    <footer class="mt-auto py-3 bg-light text-center">
+    <div class="container">
+        <img src="{{ asset('images/poliwangi.png') }}" alt="Logo" height="30" class="me-2">
+        <span class="text-muted">&copy; {{ date('Y') }} Karim Jaya Computer. All rights reserved.</span>
+    </div>
+</footer>
 
     <!-- Bootstrap JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

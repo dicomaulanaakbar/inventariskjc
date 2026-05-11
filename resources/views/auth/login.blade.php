@@ -100,17 +100,8 @@
 
     <!-- Footer -->
     <div class="absolute bottom-4 w-full text-center text-gray-400 text-sm">
-        @karim jaya stok 2026 all right reserved
+        <span class="text-muted">&copy; {{ date('Y') }} Karim Jaya Computer. All rights reserved.</span>
     </div>
-
-</div>
-
-    <!-- Footer -->
-    <div class="absolute bottom-4 w-full text-center text-gray-400 text-sm">
-        @karim jaya stok 2026 all right reserved
-    </div>
-
-</div>
 
 </body>
 </html>

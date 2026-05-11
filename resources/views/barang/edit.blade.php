@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Edit Barang: {{ $barang->nama_barang }}</div>
                 <div class="card-body">
-                    <form action="{{ route('barang.update', $barang) }}" method="POST">
+                    <form action="{{ route('barang.update', $barang) }}" method="POST" enctype="multipart/form-data">
                         @csrf @method('PUT')
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -48,6 +48,20 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="gambar" class="form-label">Gambar Barang (Opsional)</label>
+                                <input type="file" class="form-control @error('gambar') is-invalid @enderror" id="gambar" name="gambar" accept="image/*">
+                                @error('gambar')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                @if($barang->gambar)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $barang->gambar) }}" width="100" class="img-thumbnail">
+                                        <p class="text-muted small">Gambar saat ini</p>
+                                    </div>
+                                @endif
                             </div>
                             {{-- <div class="col-md-6 mb-3">
                                 <label for="supplier_id" class="form-label">Supplier</label>
