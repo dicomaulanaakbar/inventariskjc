@@ -33,7 +33,8 @@
                                 <option value=""> Pilih Penjualan </option>
 
                                 @foreach($penjualan as $pj)
-                                    <option value="{{ $pj->id }}">
+                                    {{-- Tambahkan atribut data-tgl untuk menyimpan tanggal asli transaksi --}}
+                                    <option value="{{ $pj->id }}" data-tgl="{{ $pj->tgl_jual->format('Y-m-d') }}">
                                         Transaksi #{{ $pj->id }}
                                         | {{ $pj->tgl_jual->format('d-m-Y') }}
                                         | {{ $pj->details->count() }} Item
@@ -42,17 +43,13 @@
                             </select>
                         </div>
 
-                        {{-- TANGGAL RETUR --}}
+                        {{-- TANGGAL RETUR (Sekarang Menjadi Dropdown Otomatis) --}}
                         <div class="mb-3">
                             <label class="form-label">Tanggal Retur</label>
-
-                            <input
-                                type="date"
-                                name="tgl_return"
-                                class="form-control"
-                                value="{{ old('tgl_return', date('Y-m-d')) }}"
-                                required
-                            >
+                            <select name="tgl_return" id="tgl_return" class="form-control" required>
+                                <option value="">-- Pilih Transaksi Dahulu --</option>
+                            </select>
+                            <small class="text-muted">Tanggal retur disesuaikan otomatis dengan tanggal transaksi.</small>
                         </div>
 
                         {{-- ALASAN --}}
@@ -61,7 +58,6 @@
 
                             <select name="alasan_retur" class="form-control" required>
                                 <option value="">-- Pilih Alasan --</option>
-
                                 <option value="rusak">Rusak</option>
                                 <option value="salah_barang">Salah Barang</option>
                                 <option value="kadaluarsa">Kadaluarsa</option>
@@ -120,34 +116,46 @@
 
 document.getElementById('penjualan_id').addEventListener('change', function () {
 
+    let selectedOption = this.options[this.selectedIndex];
     let penjualanId = this.value;
+    let tglTransaksi = selectedOption.getAttribute('data-tgl'); // Ambil tanggal dari atribut data
+
     let container = document.getElementById('items-container');
+    let dropdownTglRetur = document.getElementById('tgl_return');
+
+    // 1. Logika Sinkronisasi Dropdown Tanggal
+    dropdownTglRetur.innerHTML = ''; // Reset isi dropdown
 
     if (!penjualanId) {
-
+        // Jika tidak ada penjualan dipilih
+        dropdownTglRetur.innerHTML = '<option value="">-- Pilih Transaksi Dahulu --</option>';
         container.innerHTML = `
             <div class="alert alert-info">
                 Silakan pilih transaksi penjualan terlebih dahulu.
             </div>
         `;
-
         return;
     }
 
+    // Masukkan tanggal transaksi ke dalam dropdown tanggal retur
+    let opt = document.createElement('option');
+    opt.value = tglTransaksi;
+    opt.text = tglTransaksi;
+    opt.selected = true;
+    dropdownTglRetur.appendChild(opt);
+
+
+    // 2. Logika Fetch Detail Barang (AJAX)
     fetch('/retur/get-details/' + penjualanId)
-
         .then(response => response.json())
-
         .then(data => {
 
             if (data.length === 0) {
-
                 container.innerHTML = `
                     <div class="alert alert-warning">
                         Tidak ada detail barang pada transaksi ini.
                     </div>
                 `;
-
                 return;
             }
 
@@ -157,10 +165,10 @@ document.getElementById('penjualan_id').addEventListener('change', function () {
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>No</th>
+                            <th width="50">No</th>
                             <th>Nama Barang</th>
-                            <th>Jumlah Dibeli</th>
-                            <th>Jumlah Retur</th>
+                            <th width="150">Jumlah Dibeli</th>
+                            <th width="150">Jumlah Retur</th>
                         </tr>
                     </thead>
 
@@ -168,26 +176,16 @@ document.getElementById('penjualan_id').addEventListener('change', function () {
             `;
 
             data.forEach((item, index) => {
-
                 html += `
                     <tr>
-
                         <td>${index + 1}</td>
-
                         <td>
                             ${item.barang.nama_barang}
-
-                            <input
-                                type="hidden"
-                                name="items[${index}][barang_id]"
-                                value="${item.barang_id}"
-                            >
+                            <input type="hidden" name="items[${index}][barang_id]" value="${item.barang_id}">
                         </td>
-
-                        <td>
+                        <td class="text-center">
                             ${item.jumlah}
                         </td>
-
                         <td>
                             <input
                                 type="number"
@@ -195,10 +193,10 @@ document.getElementById('penjualan_id').addEventListener('change', function () {
                                 class="form-control"
                                 min="1"
                                 max="${item.jumlah}"
+                                placeholder="Maks: ${item.jumlah}"
                                 required
                             >
                         </td>
-
                     </tr>
                 `;
             });
@@ -210,11 +208,8 @@ document.getElementById('penjualan_id').addEventListener('change', function () {
 
             container.innerHTML = html;
         })
-
         .catch(error => {
-
             console.error(error);
-
             container.innerHTML = `
                 <div class="alert alert-danger">
                     Gagal memuat detail penjualan.

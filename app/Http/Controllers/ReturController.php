@@ -21,17 +21,18 @@ class ReturController extends Controller
         $returns = ReturBarang::with('barangJual', 'details.barang')
             ->orderBy('tgl_return', 'desc')
             ->paginate(15);
-            
+
         return view('retur.index', compact('returns'));
     }
 
     /**
      * Menampilkan form tambah retur.
+     * FITUR TAMBAHAN: Mengambil data minimal penjualan untuk dropdown.
      */
     public function create(Request $request)
     {
-        // Mengambil data penjualan yang tersedia untuk diretur
-        $penjualan = BarangJual::with('details.barang')
+        // Mengambil ID dan Tanggal saja agar performa lebih ringan
+        $penjualan = BarangJual::select('id', 'tgl_jual')
             ->orderBy('tgl_jual', 'desc')
             ->get();
 
@@ -57,10 +58,8 @@ class ReturController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1. Ambil data penjualan asli
             $penjualan = BarangJual::findOrFail($request->barang_jual_id);
 
-            // 2. Buat Header Retur
             $return = ReturBarang::create([
                 'tgl_return'     => $request->tgl_return,
                 'alasan_retur'   => $request->alasan_retur,
@@ -70,30 +69,29 @@ class ReturController extends Controller
             ]);
 
             foreach ($request->items as $item) {
-                // 3. Validasi: Apakah barang tersebut ada di transaksi penjualan dan jumlahnya cukup?
+                // Validasi: Apakah barang ada di transaksi asli?
                 $detailAsli = BarangJualDetail::where('barang_jual_id', $penjualan->id)
                     ->where('barang_id', $item['barang_id'])
                     ->first();
 
                 if (!$detailAsli || $item['jumlah'] > $detailAsli->jumlah) {
-                    throw new \Exception('Jumlah retur barang melebihi jumlah yang terjual.');
+                    throw new \Exception('Jumlah retur barang ' . ($detailAsli->barang->nama_barang ?? '') . ' melebihi jumlah terjual.');
                 }
 
-                // 4. Simpan Detail Retur
                 ReturDetail::create([
                     'return_id' => $return->id,
                     'barang_id' => $item['barang_id'],
                     'jumlah'    => $item['jumlah'],
                 ]);
 
-                // 5. UPDATE STOK: Menambah kembali stok barang karena barang dikembalikan
+                // Update stok (tambah kembali)
                 $barang = Barang::findOrFail($item['barang_id']);
                 $barang->increment('stok', $item['jumlah']);
             }
 
             DB::commit();
-            return redirect()->route('retur.index')->with('success', 'Retur berhasil dicatat dan stok barang otomatis bertambah.');
-            
+            return redirect()->route('retur.index')->with('success', 'Retur berhasil dicatat!');
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal simpan retur: ' . $e->getMessage());
@@ -102,25 +100,29 @@ class ReturController extends Controller
     }
 
     /**
-     * Menampilkan detail retur.
+     * API untuk mengambil detail barang dari sebuah transaksi penjualan.
+     * DIGUNAKAN OLEH: JavaScript di halaman create.
      */
+    public function getPenjualanDetails($id)
+    {
+        $details = BarangJualDetail::with('barang')
+            ->where('barang_jual_id', $id)
+            ->get();
+
+        return response()->json($details);
+    }
+
     public function show(ReturBarang $retur)
     {
         $retur->load('barangJual', 'details.barang');
         return view('retur.show', compact('retur'));
     }
 
-    /**
-     * Menampilkan form edit retur (Hanya status/tanggal).
-     */
     public function edit(ReturBarang $retur)
     {
         return view('retur.edit', compact('retur'));
     }
 
-    /**
-     * Memperbarui data retur.
-     */
     public function update(Request $request, ReturBarang $retur)
     {
         $request->validate([
@@ -133,44 +135,28 @@ class ReturController extends Controller
             'status_retur' => $request->status_retur
         ]);
 
-        return redirect()->route('retur.show', $retur)->with('success', 'Data retur diperbarui.');
+        return redirect()->route('retur.show', $retur)->with('success', 'Data diperbarui.');
     }
 
-    /**
-     * Menghapus data retur dan menyesuaikan stok kembali.
-     */
     public function destroy(ReturBarang $return)
     {
         DB::beginTransaction();
         try {
-            // Jika data retur dihapus, maka stok barang yang tadinya bertambah harus dikurangi lagi
             foreach ($return->details as $detail) {
                 $barang = Barang::find($detail->barang_id);
                 if ($barang) {
                     $barang->decrement('stok', $detail->jumlah);
                 }
             }
-
-            // Hapus detail dan header retur
             $return->details()->delete();
-            $return->delete();  
+            $return->delete();
 
             DB::commit();
-            return redirect()->route('retur.index')->with('success', 'Retur dihapus dan stok barang telah dikurangi kembali.');
-            
+            return redirect()->route('retur.index')->with('success', 'Retur dihapus.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Gagal hapus retur: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal hapus retur.');
+            return redirect()->back()->with('error', 'Gagal hapus.');
         }
-    }
-
-    /**
-     * API untuk mengambil detail barang dari sebuah transaksi penjualan (untuk JavaScript).
-     */
-    public function getPenjualanDetails($id)
-    {
-        $details = BarangJualDetail::with('barang')->where('barang_jual_id', $id)->get();
-        return response()->json($details);
     }
 }
