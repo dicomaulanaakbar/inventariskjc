@@ -125,33 +125,47 @@
                                 <li><h6 class="dropdown-header"><i class="fas fa-bell me-1"></i> Notifikasi Barang</h6></li>
                                 @if($notifMasuk->isNotEmpty())
                                 <li><h6 class="dropdown-header text-success small py-0 mt-1"><i class="fas fa-arrow-down me-1"></i> Barang Masuk</h6></li>
-                                @foreach($notifMasuk as $beli)
+                                @foreach($notifMasuk as $notif)
+                                @php $beli = $notif->notifiable; @endphp
                                 <li>
-                                    <a class="dropdown-item small" href="#">
-                                        <strong>{{ $beli->barang->nama_barang ?? '-' }}</strong>
-                                        <span class="text-success">+{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? 'pcs' }}</span>
-                                        <br>
-                                        <small class="text-muted">{{ $beli->tgl_pembelian->diffForHumans() }}</small>
-                                        @if($beli->user)
-                                            <small class="text-muted"> — {{ $beli->user->name }}</small>
-                                        @endif
-                                    </a>
+                                    <div class="dropdown-item small d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <strong>{{ $beli->barang->nama_barang ?? '-' }}</strong>
+                                            <span class="text-success">+{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? 'pcs' }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ $beli->tgl_pembelian->diffForHumans() }}</small>
+                                            @if($beli->user)
+                                                <small class="text-muted"> — {{ $beli->user->name }}</small>
+                                            @endif
+                                        </div>
+                                        <form action="{{ route('notifications.destroy', $notif) }}" method="POST" class="ms-2" onsubmit="event.stopPropagation();">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm p-0 border-0 text-muted" title="Hapus notifikasi"><i class="fas fa-times"></i></button>
+                                        </form>
+                                    </div>
                                 </li>
                                 @endforeach
                                 @endif
                                 @if($notifKeluar->isNotEmpty())
                                 <li><h6 class="dropdown-header text-warning small py-0 mt-1"><i class="fas fa-arrow-up me-1"></i> Barang Keluar</h6></li>
-                                @foreach($notifKeluar as $detail)
+                                @foreach($notifKeluar as $notif)
+                                @php $detail = $notif->notifiable; @endphp
                                 <li>
-                                    <a class="dropdown-item small" href="#">
-                                        <strong>{{ $detail->barang->nama_barang ?? '-' }}</strong>
-                                        <span class="text-warning">{{ $detail->jumlah }} {{ $detail->barang->satuan ?? 'pcs' }}</span>
-                                        <br>
-                                        <small class="text-muted">{{ $detail->barangJual?->tgl_jual?->diffForHumans() ?? '-' }}</small>
-                                        @if($detail->barangJual?->user)
-                                            <small class="text-muted"> — {{ $detail->barangJual->user->name }}</small>
-                                        @endif
-                                    </a>
+                                    <div class="dropdown-item small d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <strong>{{ $detail->barang->nama_barang ?? '-' }}</strong>
+                                            <span class="text-warning">{{ $detail->jumlah }} {{ $detail->barang->satuan ?? 'pcs' }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ $detail->barangJual?->tgl_jual?->diffForHumans() ?? '-' }}</small>
+                                            @if($detail->barangJual?->user)
+                                                <small class="text-muted"> — {{ $detail->barangJual->user->name }}</small>
+                                            @endif
+                                        </div>
+                                        <form action="{{ route('notifications.destroy', $notif) }}" method="POST" class="ms-2" onsubmit="event.stopPropagation();">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm p-0 border-0 text-muted" title="Hapus notifikasi"><i class="fas fa-times"></i></button>
+                                        </form>
+                                    </div>
                                 </li>
                                 @endforeach
                                 @endif
@@ -159,7 +173,15 @@
                                 <li><span class="dropdown-item text-muted small">Belum ada aktivitas barang.</span></li>
                                 @endif
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-center small text-primary" href="{{ route('catatan.index') }}">Lihat Semua</a></li>
+                                <li class="d-flex justify-content-between px-3 py-1">
+                                    <a class="small text-primary text-decoration-none" href="{{ route('catatan.index') }}">Lihat Semua</a>
+                                    @if($notifMasuk->isNotEmpty() || $notifKeluar->isNotEmpty())
+                                    <form action="{{ route('notifications.destroyAll') }}" method="POST" class="d-inline">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-sm p-0 border-0 text-danger small text-decoration-none">Hapus Semua</button>
+                                    </form>
+                                    @endif
+                                </li>
                             </ul>
                         </li>
 

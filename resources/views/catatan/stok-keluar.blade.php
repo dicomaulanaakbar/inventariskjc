@@ -16,17 +16,34 @@
                     <form action="{{ route('stok.keluar') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label>Pilih Barang</label>
-                            <select name="barang_id" class="form-control" required>
-                                <option value="">-- Pilih Barang --</option>
-                                @foreach($barangs as $item)
-                                    <option value="{{ $item->id }}" {{ (isset($barang) && $barang->id == $item->id) ? 'selected' : '' }}>
-                                        {{ $item->nama_barang }} (Stok: {{ $item->stok }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if(isset($barang))
+                            <div class="mb-3">
+                                <label>Barang</label>
+                                <input type="text" class="form-control" value="{{ $barang->nama_barang }}" disabled>
+                                <input type="hidden" name="barang_id" value="{{ $barang->id }}">
+                                <div class="mt-1">
+                                    <small class="text-secondary">Sisa stok: {{ $barang->stok }}</small>
+                                </div>
+                            </div>
+                        @else
+                            <div class="mb-3" x-data="{ selectedStok: '' }">
+                                <label>Pilih Barang</label>
+                                <select name="barang_id" class="form-control" required
+                                    x-on:change="selectedStok = $event.target.selectedOptions[0]?.dataset?.stok || ''">
+                                    <option value="">-- Pilih Barang --</option>
+                                    @foreach($barangs as $item)
+                                        <option value="{{ $item->id }}" data-stok="{{ $item->stok }}">
+                                            {{ $item->nama_barang }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="mt-1">
+                                    <small class="text-secondary">
+                                        <span x-text="selectedStok ? 'Sisa stok: ' + selectedStok : ''"></span>
+                                    </small>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="mb-3">
                             <label>Jumlah</label>
