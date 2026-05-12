@@ -99,7 +99,7 @@
                     @endauth
                 </ul>
 
-                <!-- Right side (User menu) -->
+                <!-- Right side (Notifications + User menu) -->
                 <ul class="navbar-nav ms-auto">
                     @guest
                         <li class="nav-item">
@@ -111,13 +111,66 @@
                         </li>
                         @endif
                     @else
+                        <!-- Notifikasi Barang Masuk & Keluar -->
                         <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" title="Notifikasi Barang" data-latest="{{ $latestNotif?->timestamp ?? 0 }}">
+                                <i class="fas fa-bell"></i>
+                                @if($notifMasuk->isNotEmpty() || $notifKeluar->isNotEmpty())
+                                    <span id="notifDot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none" style="font-size: 0.4rem;">
+                                        <span class="visually-hidden">Notifikasi baru</span>
+                                    </span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 320px;">
+                                <li><h6 class="dropdown-header"><i class="fas fa-bell me-1"></i> Notifikasi Barang</h6></li>
+                                @if($notifMasuk->isNotEmpty())
+                                <li><h6 class="dropdown-header text-success small py-0 mt-1"><i class="fas fa-arrow-down me-1"></i> Barang Masuk</h6></li>
+                                @foreach($notifMasuk as $beli)
+                                <li>
+                                    <a class="dropdown-item small" href="#">
+                                        <strong>{{ $beli->barang->nama_barang ?? '-' }}</strong>
+                                        <span class="text-success">+{{ $beli->jumlah_barang }} {{ $beli->barang->satuan ?? 'pcs' }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ $beli->tgl_pembelian->diffForHumans() }}</small>
+                                        @if($beli->user)
+                                            <small class="text-muted"> — {{ $beli->user->name }}</small>
+                                        @endif
+                                    </a>
+                                </li>
+                                @endforeach
+                                @endif
+                                @if($notifKeluar->isNotEmpty())
+                                <li><h6 class="dropdown-header text-warning small py-0 mt-1"><i class="fas fa-arrow-up me-1"></i> Barang Keluar</h6></li>
+                                @foreach($notifKeluar as $detail)
+                                <li>
+                                    <a class="dropdown-item small" href="#">
+                                        <strong>{{ $detail->barang->nama_barang ?? '-' }}</strong>
+                                        <span class="text-warning">{{ $detail->jumlah }} {{ $detail->barang->satuan ?? 'pcs' }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ $detail->barangJual?->tgl_jual?->diffForHumans() ?? '-' }}</small>
+                                        @if($detail->barangJual?->user)
+                                            <small class="text-muted"> — {{ $detail->barangJual->user->name }}</small>
+                                        @endif
+                                    </a>
+                                </li>
+                                @endforeach
+                                @endif
+                                @if($notifMasuk->isEmpty() && $notifKeluar->isEmpty())
+                                <li><span class="dropdown-item text-muted small">Belum ada aktivitas barang.</span></li>
+                                @endif
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center small text-primary" href="{{ route('catatan.index') }}">Lihat Semua</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- User Menu -->
+                        <li class="nav-item dropdown ms-2">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
         <img src="{{ Auth::user()->foto_url }}" width="32" height="32" class="rounded-circle me-2" style="object-fit: cover;">
         {{ Auth::user()->name }}
         <span class="badge bg-secondary ms-2">{{ ucfirst(Auth::user()->role) }}</span>
     </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-id-card me-2"></i> Profil</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
@@ -180,6 +233,24 @@
     <!-- Bootstrap JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var bell = document.querySelector('.nav-item.dropdown a[data-bs-toggle="dropdown"][title="Notifikasi Barang"]');
+            if (!bell) return;
+            var dot = document.getElementById('notifDot');
+            var latest = parseInt(bell.dataset.latest) || 0;
+            var lastRead = parseInt(localStorage.getItem('notifLastRead')) || 0;
+
+            if (latest > lastRead && dot) {
+                dot.classList.remove('d-none');
+            }
+
+            bell.closest('.dropdown').addEventListener('show.bs.dropdown', function () {
+                if (dot) dot.classList.add('d-none');
+                if (latest > 0) localStorage.setItem('notifLastRead', latest);
+            });
+        });
+    </script>
     <!-- Custom Scripts -->
     @stack('scripts')
 </body>
