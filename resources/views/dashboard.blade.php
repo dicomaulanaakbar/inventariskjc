@@ -104,6 +104,7 @@
                             <th>Nama Barang</th>
                             <th>Deskripsi</th>
                             <th>Harga (Jual)</th>
+                            <th>Jumlah Barang</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -121,6 +122,7 @@
                                 @endif
                             </td>
                             <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
+                            <td>{{ $barang->stok }}</td>
                             <td>
                                 @if($barang->stok <= 5)
                                     <span class="badge bg-danger">Stok Habis / Kurang</span>
@@ -136,7 +138,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="text-center">Belum ada data barang</td></tr>
+                        <tr><td colspan="7" class="text-center">Belum ada data barang</td></tr>
                         @endforelse
                     </tbody>
                 </table>
